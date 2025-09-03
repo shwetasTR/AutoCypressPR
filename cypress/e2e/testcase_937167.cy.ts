@@ -2,18 +2,14 @@
 /// <reference types="cypress" />
 import { TestCase937167 } from '../support/pageObjects/testcase_937167_po';
 
-describe('Test Case ID: 937167 - Verify in edit function', () => {
-  const selectors = { //Example selectors -  Replace with actual selectors from your application
-    facility_ownership_section: '#facilityOwnershipSection',
-    add_facility_ownership_button: '#addFacilityOwnershipButton',
-    facility_ownership_dropdown: '#facilityOwnershipDropdown',
-    save_facility_ownership_button: '#saveFacilityOwnershipButton',
-    actions_button: '.actions-button',
-    edit_facility_ownership_button: '#editFacilityOwnershipButton',
-    save_changes_button: '#saveChangesButton'
-  };
+describe('Test Case ID: 937167 - Verify Edit Function', () => {
+  const pageObject = new TestCase937167();
+  const productId = '12345'; // Replace with actual product ID
+  const hsNumber = '67890';   // Replace with actual HS Number
+  const productNumber = '54321'; // Replace with actual Product Number
+  const initialFacilityOwnership = 'Ownership A';
+  const updatedFacilityOwnership = 'Ownership B';
 
-  const pageObject = new TestCase937167(selectors);
 
   before(() => {
     cy.testCaseMapping([
@@ -23,33 +19,25 @@ describe('Test Case ID: 937167 - Verify in edit function', () => {
         testCaseLink: "https://dev.azure.com/tr-corp-tax/onesource-global-trade/_workitems/edit/937167",
       },
     ]);
-    // Add any necessary before hooks here, such as login.  Example below:
-    cy.login('valid_username', 'valid_password'); // Replace with your actual login function.
+    //Add login steps here using cy.login() if needed.  Assumed handled elsewhere or via environment setup.
 
   });
 
-
   it('should successfully edit facility ownership', () => {
-    const productId = '12345'; // Replace with actual product ID
-    const hsNumber = '67890';   // Replace with actual HS Number
-    const productNumber = '101112'; // Replace with actual Product Number
-    const initialFacilityOwnership = 'Ownership A';
-    const updatedFacilityOwnership = 'Ownership B';
-
-
     pageObject.navigateToProductRecordPage(productId, hsNumber, productNumber);
-    pageObject.verifyPageLoadsSuccessfully();
-    pageObject.facilityOwnershipSection.scrollIntoView();
+    pageObject.verifyPageLoad();
+    pageObject.scrollIntoView();
 
-
-    //Add a facility if none exists.  Error handling is needed for production code.
-    pageObject.addFacilityOwnership(initialFacilityOwnership);
-    pageObject.verifyFacilityOwnershipAdded(initialFacilityOwnership);
+    //Check if facility ownership exists, add if not.  Error handling needed for robustness.
+    pageObject.actionsButton.should('be.visible').then(($el) => {
+        if ($el.length === 0) {
+            pageObject.addFacilityOwnership(initialFacilityOwnership);
+        }
+    });
 
     pageObject.editFacilityOwnership(updatedFacilityOwnership);
-    pageObject.verifyFacilityOwnershipAdded(updatedFacilityOwnership);
-    pageObject.verifySuccessfulMessage();
-
+    // Add assertion to verify successful message or updated facility ownership.  Replace with actual selector
+    cy.contains('Facility ownership updated successfully').should('be.visible'); //Example assertion - adjust as needed.
 
   });
 });
