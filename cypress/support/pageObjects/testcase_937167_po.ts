@@ -1,39 +1,30 @@
 ```typescript
 class TestCase937167 {
-  private selectors = {
-    login_button: '#submit', // Replace with actual selector after inspection
-    product_record_page: '[data-testid="product-record-page"]', //Example, replace with actual selector
-    facility_ownership_section: '[data-testid="facility-ownership-section"]', //Example, replace with actual selector
-    add_button: 'button[data-testid="add-facility"]', //Example, replace with actual selector
-    dropdown: 'select[data-testid="facility-dropdown"]', //Example, replace with actual selector
-    save_button: 'button[data-testid="save-facility"]', //Example, replace with actual selector
-    actions_button: 'td button[data-testid="actions-button"]', //Example, replace with actual selector
-    edit_button: 'a[data-testid="edit-facility"]', //Example, replace with actual selector
-    save_changes_button: 'button[data-testid="save-changes"]', //Example, replace with actual selector
+  private selectors: any;
 
-  };
-
-  constructor() {}
+  constructor(selectors: any) {
+    this.selectors = selectors;
+  }
 
 
   getLoginButton() {
     return cy.get(this.selectors.login_button);
   }
 
-  getProductRecordPage() {
-    return cy.get(this.selectors.product_record_page);
+  getProductRecordPageLink() {
+    return cy.get(this.selectors.product_record_page_link);
   }
 
   getFacilityOwnershipSection() {
     return cy.get(this.selectors.facility_ownership_section);
   }
 
-  getAddButton() {
-    return cy.get(this.selectors.add_button);
+  getAddFacilityOwnershipButton() {
+    return cy.get(this.selectors.add_facility_ownership_button);
   }
 
-  getDropdown() {
-    return cy.get(this.selectors.dropdown);
+  getFacilityOwnershipDropdown() {
+    return cy.get(this.selectors.facility_ownership_dropdown);
   }
 
   getSaveButton() {
@@ -52,32 +43,39 @@ class TestCase937167 {
     return cy.get(this.selectors.save_changes_button);
   }
 
-  login(username: string, password: string) {
-    // Replace with actual login logic based on your application's login form.
-    //  This is a placeholder.  You need to inspect the login form and adapt this code accordingly.
-    cy.get('input[type="text"]').type(username);
-    cy.get('input[type="password"]').type(password);
+
+  login(username: string, password: string): void {
+    //  Implementation needs refinement based on actual login form structure.  This is a placeholder.
+    cy.get('input[type="text"]').type(username); // Replace with accurate selector
+    cy.get('input[type="password"]').type(password); // Replace with accurate selector
     this.getLoginButton().click();
   }
 
-  navigateToProductRecordPage(productId: string, hsNumber: string, productNumber: string) {
+  navigateToProductRecordPage(productId: string, hsNumber: string, productNumber: string): void {
     const url = `https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/gtm/product-classification/product-record?productId=${productId}&hsNumber=${hsNumber}&productNumber=${productNumber}&countryCode=US`;
-    cy.visit(url);
+    this.getProductRecordPageLink().invoke('attr', 'href').should('include', url).click();
+
   }
 
-  addFacilityOwnership(facilityType: string) {
-    this.getAddButton().click();
-    this.getDropdown().select(facilityType);
+  scrollToFacilityOwnership(): void {
+    this.getFacilityOwnershipSection().scrollIntoView();
+  }
+
+  addFacilityOwnership(facilityOwnershipValue: string): void {
+    this.getAddFacilityOwnershipButton().click();
+    this.getFacilityOwnershipDropdown().select(facilityOwnershipValue);
     this.getSaveButton().click();
   }
 
-  editFacilityOwnership(newFacilityType: string) {
-    this.getActionsButton().click();
+  editFacilityOwnership(facilityOwnershipValue: string): void {
+    this.getActionsButton().first().click();//Assumes at least one Actions button exists.  Error handling needed for no records.
     this.getEditButton().click();
-    //  Assume a dropdown or input field for editing facility ownership exists.  Replace with actual selector.
-    cy.get('select[data-testid="facility-dropdown"]').select(newFacilityType); //Example selector, replace with actual
+    //This section needs refinement based on the Edit popup's structure.  Placeholders are used below.
+    cy.get('input[name="facilityOwnership"]').clear().type(facilityOwnershipValue); //Replace with accurate selector
     this.getSaveChangesButton().click();
-  }
 
+  }
 }
+
+export default TestCase937167;
 ```
