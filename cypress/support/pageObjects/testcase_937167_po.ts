@@ -1,8 +1,8 @@
 ```typescript
 class TestCase937167 {
-  private selectors: { [key: string]: string }
+  private selectors: any;
 
-  constructor(selectors: { [key: string]: string }) {
+  constructor(selectors: any) {
     this.selectors = selectors;
   }
 
@@ -27,8 +27,8 @@ class TestCase937167 {
     return cy.get(this.selectors.actions_button);
   }
 
-  get editActionButton() {
-    return cy.get(this.selectors.edit_action_button);
+  get editFacilityOwnershipButton() {
+    return cy.get(this.selectors.edit_facility_ownership_button);
   }
 
   get saveChangesButton() {
@@ -48,37 +48,27 @@ class TestCase937167 {
   }
 
   editFacilityOwnership(facilityOwnershipValue: string) {
-    this.actionsButton.click();
-    this.editActionButton.click();
-    // Assuming a selector for the facility ownership input field exists.  Replace with actual selector.
-    cy.get('input[data-testid="facility-ownership-input"]').clear().type(facilityOwnershipValue);
+    //This assumes at least one facility ownership exists.  Robust error handling would be needed in a production environment.
+    this.actionsButton.first().click(); //Click the first actions button.  Needs improvement for multiple facilities.
+    this.editFacilityOwnershipButton.click();
+    this.facilityOwnershipDropdown.select(facilityOwnershipValue);
     this.saveChangesButton.click();
 
   }
 
+  verifyPageLoadsSuccessfully(){
+    cy.url().should('include', '/product-classification/product-record'); // Adjust as needed for your specific URL pattern.
+  }
 
-  verifyPageLoad() {
-    cy.url().should('include', '/product-classification/product-record');
+  verifyFacilityOwnershipAdded(facilityOwnershipValue: string){
+    this.facilityOwnershipSection.contains(facilityOwnershipValue).should('be.visible');
+  }
+
+  verifySuccessfulMessage(){
+    //Implement a check for a success message.  The exact implementation depends on how success is indicated on the page.
+    cy.contains('Success!').should('be.visible'); //Replace 'Success!' with the actual success message text.
   }
 
 
-  scrollIntoView() {
-    this.facilityOwnershipSection.scrollIntoView();
-  }
-
-  verifyFacilityOwnershipAdded() {
-      // Add assertion to verify facility ownership is added.  This needs a selector for the newly added facility ownership record.  Replace with actual selector.
-      cy.get('[data-testid="newly-added-facility-ownership"]').should('be.visible');
-  }
-
-  verifyFacilityOwnershipUpdated() {
-      // Add assertion to verify facility ownership is updated. This needs a selector for the updated facility ownership record. Replace with actual selector.
-      cy.get('[data-testid="updated-facility-ownership"]').should('be.visible');
-      cy.contains('Facility ownership updated successfully').should('be.visible'); // Example success message - Replace with actual message.
-
-  }
 }
-
-export default TestCase937167;
-
 ```
