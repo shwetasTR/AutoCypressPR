@@ -4,31 +4,52 @@ import { TestCase1808538 } from '../support/pageObjects/testcase_1808538_po';
 
 describe('Test Case ID 1808538', () => {
   const pageObject = new TestCase1808538();
-  const username = Cypress.env('username') || 'your_username'; // Replace with your environment variable or hardcoded value.
-  const password = Cypress.env('password') || 'your_password'; // Replace with your environment variable or hardcoded value.
+  const username = Cypress.env('username'); //get username from cypress.env
+  const password = Cypress.env('password'); //get password from cypress.env
 
 
-  it('should successfully perform all test steps', () => {
+  beforeEach(() => {
+    cy.visit(pageObject.baseUrl);
+  });
+
+  it('should successfully login, navigate to custom mappings, clear grouping, apply filters, and verify table data', () => {
+    //Login
     pageObject.login(username, password);
+
+    //Navigate to Custom Mappings
     pageObject.navigateToCustomMappings();
+
+    //Clear Grouping
     pageObject.clearGrouping();
     pageObject.verifyGroupButton();
 
-    const filtersToApply = ['filter1', 'filter2', 'filter3']; // Replace with your actual filter values.
-    pageObject.applyFilters(filtersToApply);
-    pageObject.verifyFilterCount(filtersToApply.length);
+    //Apply Filters
+    pageObject.applyFilters();
+    pageObject.verifyFiltersApplied();
 
-
-    // Test cases for data existence in the table.  Update as needed.
-    //Scenario 1: Data exists
-    pageObject.verifyTableData(true);
-
-    //Scenario 2: Data does not exist.  You may need to add steps to ensure no data is present for this scenario to be reliable.
-    // pageObject.applyFilters(['aFilterThatYieldsNoResults']); //Example - replace with your filter logic
-    // pageObject.verifyTableData(false);
-
+    //Verify Table Data
+    pageObject.verifyTableData();
 
   });
+
+  //Add more tests as needed for different scenarios (e.g., no data scenario).  Example below:
+
+  it('should handle scenarios with no suitable data', () => {
+      //Login
+      pageObject.login(username, password);
+
+      //Navigate to Custom Mappings
+      pageObject.navigateToCustomMappings();
+
+      //Apply Filters that are expected to return no data
+      pageObject.applyFilters(); //Modify this to apply filters that should result in an empty table.
+      pageObject.verifyFiltersApplied(); //Adjust verification as needed
+
+      //Verify Table Data - Expecting empty table
+      pageObject.verifyTableData();
+
+  });
+
 });
 
 ```
