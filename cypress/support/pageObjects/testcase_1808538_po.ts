@@ -9,12 +9,13 @@ class TestCase1808538 {
     usernameField: '#username', // Replace with actual selector
     passwordField: '#password', // Replace with actual selector
     groupButton: '[data-testid="group-button"]', // Replace with actual selector
-    groupClearButton: '[data-testid="clear-grouping"]', // Replace with actual selector
+    groupClearButton: '[data-testid="clear-grouping"]', //Replace with actual selector
     filterButton: '[data-testid="filter-button"]', // Replace with actual selector
-    filterCount: '[data-testid="filter-count"]', // Replace with actual selector
-    dataTableRow: 'tbody tr', // Replace with actual selector
+    filterChips: '.filter-chip', // Replace with actual selector
+    dataTable: 'table tbody', // Replace with actual selector
 
   };
+
 
   login(username: string, password: string): void {
     cy.visit(this.loginUrl);
@@ -33,32 +34,33 @@ class TestCase1808538 {
 
   clearGrouping(): void {
     cy.get(this.selectors.groupButton).click();
-    cy.get(this.selectors.groupClearButton).click();
-    cy.get(this.selectors.groupButton).should('not.contain', /[0-9]/); //Assert no numbers in button. Adjust as needed.
+    cy.get(this.selectors.groupClearButton).click(); // Assuming a clear button exists. Adjust as needed.
+
   }
 
+  verifyGroupButton(): void {
+    cy.get(this.selectors.groupButton).should('not.contain', /[0-9]/); //Check for numbers. Adjust as needed.
+  }
 
-  applyFilters(filters: any[]): void { //filters should be an array of filter objects with appropriate selectors and values.
+  applyFilters(filters: string[]): void {
     cy.get(this.selectors.filterButton).click();
-    filters.forEach(filter => {
-      //Implement filter application logic based on filter object structure.  Example below:
-      cy.get(filter.selector).select(filter.value);
-    });
-    cy.get(this.selectors.filterButton).should('contain', filters.length); //Assert filter count. Adjust as needed.
-
-
+    // Add logic to apply filters based on 'filters' array.  This will depend on the application's implementation.
+    // Example:  cy.get(`[data-testid="filter-${filter}"]`).click(); for each filter in the array.
   }
 
-  verifyTableData(): void {
-    cy.get(this.selectors.dataTableRow).then(($rows) => {
-      if ($rows.length > 0) {
-        //Assert data is present in the table.  Add assertions to check data contents if needed.
-        cy.log('Data found in table');
-      } else {
-        //Assert table is empty.
-        cy.log('Table is empty');
-      }
-    });
+
+  verifyFilterCount(expectedCount: number): void {
+    cy.get(this.selectors.filterChips).should('have.length', expectedCount); // Adjust as needed based on how filters are displayed.
+  }
+
+  verifyTableData(expectedDataExists: boolean): void {
+    if (expectedDataExists) {
+      cy.get(this.selectors.dataTable).find('tr').should('have.length.greaterThan', 1); //Check for rows beyond header row. Adjust as needed.
+
+    } else {
+      cy.get(this.selectors.dataTable).find('tr').should('have.length', 1); //Check for only header row. Adjust as needed.
+
+    }
   }
 }
 ```
