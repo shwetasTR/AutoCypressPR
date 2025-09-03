@@ -1,85 +1,85 @@
 ```typescript
 class TestCase937167 {
-  private readonly facilityOwnershipSection: string;
-  private readonly addFacilityOwnershipButton: string;
-  private readonly facilityOwnershipDropdown: string;
-  private readonly saveFacilityOwnershipButton: string;
-  private readonly actionsButton: string;
-  private readonly editFacilityOwnershipButton: string;
-  private readonly saveChangesButton: string;
+  private selectors: any;
 
-  constructor(selectors: {
-    [key: string]: string;
-  }) {
-    this.facilityOwnershipSection = selectors.facility_ownership_section;
-    this.addFacilityOwnershipButton = selectors.add_facility_ownership_button;
-    this.facilityOwnershipDropdown = selectors.facility_ownership_dropdown;
-    this.saveFacilityOwnershipButton = selectors.save_facility_ownership_button;
-    this.actionsButton = selectors.actions_button;
-    this.editFacilityOwnershipButton = selectors.edit_facility_ownership_button;
-    this.saveChangesButton = selectors.save_changes_button;
-
-    // Input validation: Check if all selectors are defined.  Throw error if not.
-    if (Object.values(selectors).some(selector => !selector)) {
-      throw new Error("One or more selectors are missing or undefined.");
-    }
-
+  constructor(selectors: any) {
+    this.selectors = selectors;
   }
 
 
-  getFacilityOwnershipSection() {
-    return cy.get(this.facilityOwnershipSection);
+  get facilityOwnershipSection() {
+    return cy.get(this.selectors.facility_ownership_section);
   }
 
-  getAddFacilityOwnershipButton() {
-    return cy.get(this.addFacilityOwnershipButton);
+  get addFacilityOwnershipButton() {
+    return cy.get(this.selectors.add_facility_ownership_button);
   }
 
-  getFacilityOwnershipDropdown() {
-    return cy.get(this.facilityOwnershipDropdown);
+  get facilityOwnershipDropdown() {
+    return cy.get(this.selectors.facility_ownership_dropdown);
   }
 
-  getSaveFacilityOwnershipButton() {
-    return cy.get(this.saveFacilityOwnershipButton);
+  get saveFacilityOwnershipButton() {
+    return cy.get(this.selectors.save_facility_ownership_button);
   }
 
-  getActionsButton() {
-    return cy.get(this.actionsButton);
+  get actionsButton() {
+    return cy.get(this.selectors.actions_button);
   }
 
-  getEditFacilityOwnershipButton() {
-    return cy.get(this.editFacilityOwnershipButton);
+  get editActionButton() {
+    return cy.get(this.selectors.edit_action_button);
   }
 
-  getSaveChangesButton() {
-    return cy.get(this.saveChangesButton);
+  get saveChangesButton() {
+    return cy.get(this.selectors.save_changes_button);
   }
 
-  addFacilityOwnership(facilityOwnershipValue: string) {
-    this.getAddFacilityOwnershipButton().click();
-    this.getFacilityOwnershipDropdown().select(facilityOwnershipValue);
-    this.getSaveFacilityOwnershipButton().click();
-  }
+  login(username: string, password: string) {
+    //Implementation for login using username and password.  This needs to be fleshed out based on your application's login mechanism.  Example below assumes standard form inputs.  Replace with your actual selectors.
+    cy.get('#username').type(username);
+    cy.get('#password').type(password);
+    cy.get('button[type="submit"]').click();
 
-  editFacilityOwnership(facilityOwnershipValue: string) {
-    this.getActionsButton().first().click(); // Assumes multiple actions buttons are possible. Selects first one.
-    this.getEditFacilityOwnershipButton().click();
-    // Add logic to change the facility ownership value in the edit popup.  This requires selectors for the edit input field.
-    // Example (assuming an input field with data-testid='facility-ownership-input'):
-    // cy.get('[data-testid="facility-ownership-input"]').clear().type(facilityOwnershipValue);
-    this.getSaveChangesButton().click();
-  }
+    // Assertion to check successful login.  This needs to be adjusted based on your application's post-login state.
+    cy.contains('Welcome, '+ username).should('be.visible');
 
+  }
 
   navigateToProductRecordPage(productId: string, hsNumber: string, productNumber: string) {
     const url = `https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/gtm/product-classification/product-record?productId=${productId}&hsNumber=${hsNumber}&productNumber=${productNumber}&countryCode=US`;
     cy.visit(url);
   }
 
-  verifyPageLoad() {
-    cy.url().should('include', '/product-classification/product-record');
+  addFacilityOwnership(facilityOwnershipValue: string) {
+    this.addFacilityOwnershipButton.click();
+    this.facilityOwnershipDropdown.select(facilityOwnershipValue);
+    this.saveFacilityOwnershipButton.click();
+  }
+
+  editFacilityOwnership(facilityOwnershipValue: string) {
+    this.actionsButton.click();
+    this.editActionButton.click();
+    //Implementation to change facility ownership in the edit popup.  This needs to be fleshed out based on your application's UI elements.  Example below assumes a standard input field. Replace with your actual selector.
+    cy.get('#facilityOwnershipInput').clear().type(facilityOwnershipValue);
+    this.saveChangesButton.click();
   }
 
 
+  verifyPageLoad(){
+    cy.url().should('include', '/product-classification/product-record'); //Adapt this assertion to your needs
+  }
+
+  verifyFacilityOwnershipAdded(){
+    // Add assertion to check if the facility ownership record is added successfully.  This needs to be fleshed out based on your application's UI elements.
+    cy.contains('Facility Ownership Added Successfully').should('be.visible'); //Example assertion - replace with your actual success message.
+  }
+
+  scrollFacilityOwnershipSection(){
+    this.facilityOwnershipSection.scrollIntoView();
+  }
+
 }
+
+export default TestCase937167;
 ```
