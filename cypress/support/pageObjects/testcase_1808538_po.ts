@@ -1,82 +1,72 @@
 ```typescript
 class TestCase1808538 {
-  private selectors = {
-    login_form: "#login-form", // Needs to be updated after inspecting the actual login page
-    group_button: "button[data-testid='group-button']",
-    filter_button: "button[data-testid='filter-button']",
-    product_table: "table.product-table", // Might need a more specific selector
-    custom_mapping_page: "body[data-testid='custom-mappings-page']"
-  };
+  private groupButton: string;
+  private filterButton: string;
 
-  // Getter methods for selectors
-  getLoginFormSelector() {
-    return this.selectors.login_form;
-  }
-
-  getGroupButtonSelector() {
-    return this.selectors.group_button;
-  }
-
-  getFilterButtonSelector() {
-    return this.selectors.filter_button;
-  }
-
-  getProductTableSelector() {
-    return this.selectors.product_table;
-  }
-
-  getCustomMappingPageSelector(){
-    return this.selectors.custom_mapping_page;
+  constructor(selectors: { [key: string]: string }) {
+    this.groupButton = selectors.group_button;
+    this.filterButton = selectors.filter_button;
   }
 
 
-  // Action methods
-  login(username: string, password: string): void {
-    //This needs to be implemented based on the actual login form.  Placeholders are used here.
-    cy.visit("https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/"); //This assumes the base URL is correct and redirects to the login page.  This might need adjustment depending on the actual login process.
-    cy.get(this.getLoginFormSelector()).within(() => {
-      cy.get('input[type="text"]').type(username);
-      cy.get('input[type="password"]').type(password);
-      cy.get('button[type="submit"]').click();
-    });
+  getGroupButton() {
+    return cy.get(this.groupButton);
   }
 
-  navigateToCustomMappings(): void {
-    cy.visit("https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/gtm/product-classification/custom-mappings");
+  getFilterButton() {
+    return cy.get(this.filterButton);
   }
 
-  clearGrouping(): void {
-    cy.get(this.getGroupButtonSelector()).click();
-    // Add assertions to verify grouping is cleared (This will depend on the UI implementation)
-    // For example: cy.get(someSelector).should('not.contain', '123'); //Replace '123' with a sample number expected in the group
+  login(username: string, password: string) {
+    //Implementation for login using provided username and password.  This would typically involve interacting with login fields.  Replace with your actual login implementation.
+    cy.visit('https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/');
+    //Add selectors for username and password fields here and implement login logic.  Example below:
+    cy.get('#username').type(username);
+    cy.get('#password').type(password);
+    cy.get('#submit').click();
+
   }
 
-  applyFilters(): void {
-    cy.get(this.getFilterButtonSelector()).click();
-    // Add filter application logic here.  This depends heavily on the implementation of the filter UI.
-    // Example (replace with actual filter selectors):
-    // cy.get('[data-testid="filter-option-1"]').click();
-    // cy.get('[data-testid="filter-option-2"]').click();
-    // cy.get('[data-testid="apply-filters-button"]').click(); //or similar selector to apply filters
+  navigateToCustomMappings() {
+    cy.visit('https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/gtm/product-classification/custom-mappings');
   }
 
-  verifyTableContent(): void {
-    cy.get(this.getProductTableSelector()).then(($table) => {
-      if ($table.find('tr').length > 1) { //Checking if more than header row is present
-        cy.log('Table contains data.');
-      } else {
-        cy.log('Table is empty.');
-      }
-    });
+  clearGrouping() {
+    this.getGroupButton().click();
+    // Add implementation to clear all groupings.  This will depend on the UI elements available.  Example below, assuming a clear button exists:
+    cy.get('#clearGroupingButton').click(); // Replace with actual selector
+
   }
 
-  verifyGroupButton(): void {
-      cy.get(this.getGroupButtonSelector()).should('not.contain',/\d+/); //Regex to check for absence of numbers
+  applyFilters(filters: any) { // 'any' because filter specifics are not defined
+    this.getFilterButton().click();
+    // Add implementation to apply filters based on the 'filters' object.  This will depend on UI elements for filter application.  Example below:
+    for (const filter in filters) {
+      cy.get(`#filter-${filter}`).select(filters[filter]); //Example selector, replace with actual selector
+    }
+
   }
 
-  verifyFilterButton(): void{
-    //This will depend on how the number of applied filters is displayed on the button.  This is a placeholder.
-    cy.get(this.getFilterButtonSelector()).should('contain','2'); //Example: Check if the button shows '2' applied filters. Replace '2' with appropriate assertion.
+
+  verifyGroupButtonState() {
+    this.getGroupButton().should('not.contain', /[0-9]/); //Check button text doesn't contain numbers.  Adjust as needed based on actual UI.
+
+  }
+
+  verifyFilterButtonState(expectedFilterCount: number) {
+    //Implementation to verify the number of applied filters.  This will depend on how the filter count is displayed in the UI. Example below:
+    this.getFilterButton().should('contain', expectedFilterCount.toString());
+
+  }
+
+  verifyTableState(shouldHaveData: boolean) {
+    const tableSelector = 'table tbody tr'; // Replace with the actual selector for table rows
+
+    if (shouldHaveData) {
+      cy.get(tableSelector).should('have.length.greaterThan', 0);
+    } else {
+      cy.get(tableSelector).should('have.length', 0);
+    }
   }
 }
 
