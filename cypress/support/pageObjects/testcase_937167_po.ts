@@ -1,9 +1,17 @@
 ```typescript
 class TestCase937167 {
-  private selectors: any;
+  private selectors: { [key: string]: string };
 
-  constructor(selectors: any) {
-    this.selectors = selectors;
+  constructor() {
+    this.selectors = {
+      facility_ownership_section: "#contents-facilityOwnership",
+      add_facility_ownership_button: "button[aria-label='Add Facility Ownership']",
+      facility_ownership_dropdown: "select[name='facilityOwnership']",
+      save_facility_ownership_button: "button[type='submit']",
+      actions_button: "button[aria-label='Actions']",
+      edit_facility_ownership_button: "button[aria-label='Edit']",
+      save_changes_button: "button[type='submit']",
+    };
   }
 
 
@@ -27,29 +35,19 @@ class TestCase937167 {
     return cy.get(this.selectors.actions_button);
   }
 
-  get editActionButton() {
-    return cy.get(this.selectors.edit_action_button);
+  get editFacilityOwnershipButton() {
+    return cy.get(this.selectors.edit_facility_ownership_button);
   }
 
   get saveChangesButton() {
     return cy.get(this.selectors.save_changes_button);
   }
 
-  login(username: string, password: string) {
-    //Implementation for login using username and password.  This needs to be fleshed out based on your application's login mechanism.  Example below assumes standard form inputs.  Replace with your actual selectors.
-    cy.get('#username').type(username);
-    cy.get('#password').type(password);
-    cy.get('button[type="submit"]').click();
-
-    // Assertion to check successful login.  This needs to be adjusted based on your application's post-login state.
-    cy.contains('Welcome, '+ username).should('be.visible');
-
-  }
-
   navigateToProductRecordPage(productId: string, hsNumber: string, productNumber: string) {
     const url = `https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/gtm/product-classification/product-record?productId=${productId}&hsNumber=${hsNumber}&productNumber=${productNumber}&countryCode=US`;
     cy.visit(url);
   }
+
 
   addFacilityOwnership(facilityOwnershipValue: string) {
     this.addFacilityOwnershipButton.click();
@@ -59,27 +57,25 @@ class TestCase937167 {
 
   editFacilityOwnership(facilityOwnershipValue: string) {
     this.actionsButton.click();
-    this.editActionButton.click();
-    //Implementation to change facility ownership in the edit popup.  This needs to be fleshed out based on your application's UI elements.  Example below assumes a standard input field. Replace with your actual selector.
-    cy.get('#facilityOwnershipInput').clear().type(facilityOwnershipValue);
+    this.editFacilityOwnershipButton.click();
+    //Assuming a similar dropdown exists in the edit popup
+    this.facilityOwnershipDropdown.select(facilityOwnershipValue);
     this.saveChangesButton.click();
+
   }
 
-
-  verifyPageLoad(){
-    cy.url().should('include', '/product-classification/product-record'); //Adapt this assertion to your needs
+  verifyPageLoad() {
+    cy.url().should('include', '/product-classification/product-record');
   }
 
-  verifyFacilityOwnershipAdded(){
-    // Add assertion to check if the facility ownership record is added successfully.  This needs to be fleshed out based on your application's UI elements.
-    cy.contains('Facility Ownership Added Successfully').should('be.visible'); //Example assertion - replace with your actual success message.
+  verifyFacilityOwnershipAdded() {
+    // Add assertion to check if the facility ownership is added successfully.  This will depend on your UI.  Example:
+    cy.contains('Facility Ownership Added Successfully').should('be.visible'); // Replace with your actual success message
   }
 
-  scrollFacilityOwnershipSection(){
+  scrollIntoView(){
     this.facilityOwnershipSection.scrollIntoView();
   }
 
 }
-
-export default TestCase937167;
 ```
