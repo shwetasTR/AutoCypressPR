@@ -1,83 +1,87 @@
 ```typescript
 class TestCase1808538 {
-  private groupButtonSelector: string;
-  private filterButtonSelector: string;
+  private groupButton: string;
+  private filterButton: string;
 
   constructor(selectors: { [key: string]: string }) {
-    this.groupButtonSelector = selectors.group_button;
-    this.filterButtonSelector = selectors.filter_button;
+    this.groupButton = selectors.group_button;
+    this.filterButton = selectors.filter_button;
     // Add validation to ensure selectors are not null or empty
     this.validateSelectors();
   }
 
-  private validateSelectors(): void {
-    if (!this.groupButtonSelector || this.groupButtonSelector.trim() === "") {
+  private validateSelectors() {
+    if (!this.groupButton || this.groupButton.trim() === "") {
       throw new Error("group_button selector is missing or invalid.");
     }
-    if (!this.filterButtonSelector || this.filterButtonSelector.trim() === "") {
+    if (!this.filterButton || this.filterButton.trim() === "") {
       throw new Error("filter_button selector is missing or invalid.");
     }
   }
 
 
   getGroupButton = () => {
-    return cy.get(this.groupButtonSelector);
+    return cy.get(this.groupButton);
   };
 
   getFilterButton = () => {
-    return cy.get(this.filterButtonSelector);
+    return cy.get(this.filterButton);
   };
 
   login = (username: string, password: string) => {
-    //Implementation for login using provided credentials.  Replace with your actual login implementation.
-    cy.visit("https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/");
-    // Add your login steps here using username and password.  Example below:
+    // Implement your login logic here using cy.get and other Cypress commands.  
+    //  This will depend heavily on the structure of your login form.
+    // Example (replace with your actual selectors):
     cy.get('#username').type(username);
     cy.get('#password').type(password);
     cy.get('#login-button').click();
-
-    // Assertion to check successful login - replace with your actual assertion.
-    cy.contains('Welcome').should('be.visible');
-
   };
 
-
   navigateToCustomMappings = () => {
-    cy.visit("https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/gtm/product-classification/custom-mappings");
+    cy.visit('https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/gtm/product-classification/custom-mappings');
   };
 
   clearGrouping = () => {
     this.getGroupButton().click();
-    // Add implementation to clear all groupings.  This will depend on your UI. Example below:
-    cy.get('.clear-grouping-button').click(); // Replace with your actual selector
-
-    // Assertion to check if grouping is cleared.  Replace with your actual assertion.
-    this.getGroupButton().should('not.contain', /\d+/); //Check for absence of numbers
-
+    // Add logic to clear grouping.  This will depend on the UI elements.  For example:
+    // cy.get('[data-testid="clear-grouping"]').click(); // Replace with your actual selector
   };
 
-  applyFilters = (filters: any[]) => {
+  applyFilters = (filters: any) => {  // Define the type of your filters object
     this.getFilterButton().click();
-    // Add implementation to apply filters. This will depend on your UI. Example below:
-    filters.forEach(filter => {
-        cy.get(`#filter-${filter.id}`).check(); //Replace with your actual filter selectors
-    });
-
-    //Assertion to check if filters are applied. Replace with your actual assertion.
-    this.getFilterButton().should('contain', filters.length); //Check if button displays the number of applied filters
-
+    // Add logic to apply filters based on the filters object. This will depend on the UI elements.
+    // Example (replace with your actual selectors and filter application logic):
+    // Object.keys(filters).forEach(key => {
+    //   cy.get(`#filter-${key}`).select(filters[key]);
+    // });
   };
 
-  verifyTableData = (isEmptyExpected: boolean) => {
-      const tableRowsSelector = 'table tbody tr'; // Replace with your table rows selector
+  verifyGroupButtonState = (shouldContainNumbers: boolean) => {
+    this.getGroupButton().then(($button) => {
+      const buttonText = $button.text();
+      const containsNumbers = /\d/.test(buttonText);
+      expect(containsNumbers).to.eq(shouldContainNumbers);
+    });
+  };
 
-      cy.get(tableRowsSelector).then(($rows) => {
-          const isEmpty = $rows.length === 0;
-          expect(isEmpty).to.eq(isEmptyExpected);
-      });
 
-  }
+  verifyFilterButtonState = (expectedFilterCount: number) => {
+    this.getFilterButton().then(($button) => {
+      const buttonText = $button.text();
+      // Extract the number of filters from buttonText (logic depends on UI)
+      const filterCount = parseInt(buttonText.match(/\d+/)[0], 10); //Example - adapt as needed
+      expect(filterCount).to.eq(expectedFilterCount);
+    });
+  };
 
+  verifyTableData = (shouldHaveData: boolean) => {
+    const tableSelector = 'table tbody tr'; // Replace with your actual table row selector.
+    if (shouldHaveData) {
+      cy.get(tableSelector).should('have.length.greaterThan', 0);
+    } else {
+      cy.get(tableSelector).should('have.length', 0);
+    }
+  };
 }
 
 export default TestCase1808538;
