@@ -12,7 +12,7 @@ class TestCase1808538 {
     groupClearButton: '[data-testid="clear-grouping"]', // Replace with actual selector
     filterButton: '[data-testid="filter-button"]', // Replace with actual selector
     filterCount: '[data-testid="filter-count"]', // Replace with actual selector
-    tableData: 'tbody tr', // Replace with actual selector
+    dataTableRow: 'tbody tr', // Replace with actual selector
 
   };
 
@@ -28,31 +28,35 @@ class TestCase1808538 {
   navigateToCustomMappings(): void {
     cy.visit(this.customMappingsUrl);
     cy.url().should('include', '/custom-mappings'); //Assert navigation. Adjust as needed.
+
   }
 
   clearGrouping(): void {
     cy.get(this.selectors.groupButton).click();
     cy.get(this.selectors.groupClearButton).click();
-    cy.get(this.selectors.groupButton).should('not.contain', /[0-9]/); //Assert no numbers
+    cy.get(this.selectors.groupButton).should('not.contain', /[0-9]/); //Assert no numbers in button. Adjust as needed.
   }
 
 
-  applyFilters(): void {
+  applyFilters(filters: any[]): void { //filters should be an array of filter objects with appropriate selectors and values.
     cy.get(this.selectors.filterButton).click();
-    // Add specific filter application logic here.  This is placeholder.
-    // Example: cy.get('[data-testid="filter-input"]').type('filterValue');
-    // Example: cy.get('[data-testid="apply-filter"]').click();
-    cy.get(this.selectors.filterCount).should('exist'); //Assert filters applied
+    filters.forEach(filter => {
+      //Implement filter application logic based on filter object structure.  Example below:
+      cy.get(filter.selector).select(filter.value);
+    });
+    cy.get(this.selectors.filterButton).should('contain', filters.length); //Assert filter count. Adjust as needed.
+
 
   }
 
   verifyTableData(): void {
-    cy.get(this.selectors.tableData).then(($rows) => {
+    cy.get(this.selectors.dataTableRow).then(($rows) => {
       if ($rows.length > 0) {
-        //Data exists, perform assertions on data if needed.
-        cy.log('Table data found.');
+        //Assert data is present in the table.  Add assertions to check data contents if needed.
+        cy.log('Data found in table');
       } else {
-        cy.log('Table is empty.');
+        //Assert table is empty.
+        cy.log('Table is empty');
       }
     });
   }
