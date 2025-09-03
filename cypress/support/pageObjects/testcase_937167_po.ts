@@ -1,8 +1,8 @@
 ```typescript
 class TestCase937167 {
-  private selectors: any;
+  private selectors: { [key: string]: string }
 
-  constructor(selectors: any) {
+  constructor(selectors: { [key: string]: string }) {
     this.selectors = selectors;
   }
 
@@ -50,27 +50,35 @@ class TestCase937167 {
   editFacilityOwnership(facilityOwnershipValue: string) {
     this.actionsButton.click();
     this.editActionButton.click();
-    // Assuming there's an input field to change facility ownership.  Replace with actual selector.
+    // Assuming a selector for the facility ownership input field exists.  Replace with actual selector.
     cy.get('input[data-testid="facility-ownership-input"]').clear().type(facilityOwnershipValue);
     this.saveChangesButton.click();
 
   }
 
-  verifyPageLoadedSuccessfully(){
+
+  verifyPageLoad() {
     cy.url().should('include', '/product-classification/product-record');
   }
 
-  verifyFacilityOwnershipAdded(){
-    //Add assertion to check if facility ownership is added successfully.  This will depend on your UI.  Example:
-    cy.contains('Facility Ownership Added Successfully').should('be.visible');
 
-  }
-
-  scrollIntoView(){
+  scrollIntoView() {
     this.facilityOwnershipSection.scrollIntoView();
   }
 
+  verifyFacilityOwnershipAdded() {
+      // Add assertion to verify facility ownership is added.  This needs a selector for the newly added facility ownership record.  Replace with actual selector.
+      cy.get('[data-testid="newly-added-facility-ownership"]').should('be.visible');
+  }
+
+  verifyFacilityOwnershipUpdated() {
+      // Add assertion to verify facility ownership is updated. This needs a selector for the updated facility ownership record. Replace with actual selector.
+      cy.get('[data-testid="updated-facility-ownership"]').should('be.visible');
+      cy.contains('Facility ownership updated successfully').should('be.visible'); // Example success message - Replace with actual message.
+
+  }
 }
 
 export default TestCase937167;
+
 ```
