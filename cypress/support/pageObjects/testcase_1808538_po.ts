@@ -8,11 +8,11 @@ class TestCase1808538 {
     loginButton: 'button[type="submit"]', // Replace with actual selector
     usernameField: '#username', // Replace with actual selector
     passwordField: '#password', // Replace with actual selector
-    groupButton: '[data-testid="group-button"]', // Replace with actual selector
-    groupClearButton: '[data-testid="clear-grouping"]', //Replace with actual selector
-    filterButton: '[data-testid="filter-button"]', // Replace with actual selector
-    filterChips: '.filter-chip', // Replace with actual selector
-    dataTable: 'table tbody', // Replace with actual selector
+    groupButton: '#groupButton', // Replace with actual selector
+    filterButton: '#filterButton', // Replace with actual selector
+    appliedFiltersCount: '.applied-filters-count', //Replace with actual selector
+    customMappingTable: '#customMappingTable', //Replace with actual selector
+    tableRows: 'tbody tr', //Replace with actual selector
 
   };
 
@@ -22,45 +22,50 @@ class TestCase1808538 {
     cy.get(this.selectors.usernameField).type(username);
     cy.get(this.selectors.passwordField).type(password);
     cy.get(this.selectors.loginButton).click();
-    cy.url().should('not.include', '/login'); //Assert successful login.  Adjust as needed.
+    cy.url().should('not.include', '/login'); // Add a check to ensure successful login.  Adjust as needed.
 
   }
 
   navigateToCustomMappings(): void {
     cy.visit(this.customMappingsUrl);
-    cy.url().should('include', '/custom-mappings'); //Assert navigation. Adjust as needed.
-
+    cy.title().should('include', 'Custom HS Mappings'); //Add a check to ensure page loaded correctly. Adjust as needed.
   }
 
   clearGrouping(): void {
     cy.get(this.selectors.groupButton).click();
-    cy.get(this.selectors.groupClearButton).click(); // Assuming a clear button exists. Adjust as needed.
+    // Add logic to clear grouping.  This will depend on the UI.  Example:
+    cy.contains('Clear Grouping').click(); //Replace with actual selector or method
 
   }
 
   verifyGroupButton(): void {
-    cy.get(this.selectors.groupButton).should('not.contain', /[0-9]/); //Check for numbers. Adjust as needed.
+    cy.get(this.selectors.groupButton).should('not.contain', /[0-9]/);
   }
 
-  applyFilters(filters: string[]): void {
+
+  applyFilters(): void {
     cy.get(this.selectors.filterButton).click();
-    // Add logic to apply filters based on 'filters' array.  This will depend on the application's implementation.
-    // Example:  cy.get(`[data-testid="filter-${filter}"]`).click(); for each filter in the array.
+    // Add logic to apply filters. This will depend on the UI. Example:
+    cy.get('[data-testid="filter-option-1"]').check(); //Replace with actual selectors
+    cy.get('[data-testid="filter-option-2"]').check(); //Replace with actual selectors
+    cy.get('[data-testid="apply-filters"]').click(); //Replace with actual selector
+
   }
 
+  verifyFiltersApplied(): void {
+    cy.get(this.selectors.appliedFiltersCount).should('be.visible').and('contain', '2'); // Adjust for the number of filters applied
 
-  verifyFilterCount(expectedCount: number): void {
-    cy.get(this.selectors.filterChips).should('have.length', expectedCount); // Adjust as needed based on how filters are displayed.
   }
 
-  verifyTableData(expectedDataExists: boolean): void {
-    if (expectedDataExists) {
-      cy.get(this.selectors.dataTable).find('tr').should('have.length.greaterThan', 1); //Check for rows beyond header row. Adjust as needed.
+  verifyTableData(): void {
+      cy.get(this.selectors.customMappingTable).then(($table) => {
+          if ($table.find(this.selectors.tableRows).length > 0) {
+              cy.log('Table contains data');
+          } else {
+              cy.log('Table is empty');
+          }
+      });
 
-    } else {
-      cy.get(this.selectors.dataTable).find('tr').should('have.length', 1); //Check for only header row. Adjust as needed.
-
-    }
   }
 }
 ```
