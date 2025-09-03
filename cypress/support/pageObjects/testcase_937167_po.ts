@@ -1,81 +1,85 @@
 ```typescript
 class TestCase937167 {
-  private selectors: any;
+  private readonly facilityOwnershipSection: string;
+  private readonly addFacilityOwnershipButton: string;
+  private readonly facilityOwnershipDropdown: string;
+  private readonly saveFacilityOwnershipButton: string;
+  private readonly actionsButton: string;
+  private readonly editFacilityOwnershipButton: string;
+  private readonly saveChangesButton: string;
 
-  constructor(selectors: any) {
-    this.selectors = selectors;
+  constructor(selectors: {
+    [key: string]: string;
+  }) {
+    this.facilityOwnershipSection = selectors.facility_ownership_section;
+    this.addFacilityOwnershipButton = selectors.add_facility_ownership_button;
+    this.facilityOwnershipDropdown = selectors.facility_ownership_dropdown;
+    this.saveFacilityOwnershipButton = selectors.save_facility_ownership_button;
+    this.actionsButton = selectors.actions_button;
+    this.editFacilityOwnershipButton = selectors.edit_facility_ownership_button;
+    this.saveChangesButton = selectors.save_changes_button;
+
+    // Input validation: Check if all selectors are defined.  Throw error if not.
+    if (Object.values(selectors).some(selector => !selector)) {
+      throw new Error("One or more selectors are missing or undefined.");
+    }
+
   }
 
-
-  getLoginButton() {
-    return cy.get(this.selectors.login_button);
-  }
-
-  getProductRecordPageLink() {
-    return cy.get(this.selectors.product_record_page_link);
-  }
 
   getFacilityOwnershipSection() {
-    return cy.get(this.selectors.facility_ownership_section);
+    return cy.get(this.facilityOwnershipSection);
   }
 
   getAddFacilityOwnershipButton() {
-    return cy.get(this.selectors.add_facility_ownership_button);
+    return cy.get(this.addFacilityOwnershipButton);
   }
 
   getFacilityOwnershipDropdown() {
-    return cy.get(this.selectors.facility_ownership_dropdown);
+    return cy.get(this.facilityOwnershipDropdown);
   }
 
-  getSaveButton() {
-    return cy.get(this.selectors.save_button);
+  getSaveFacilityOwnershipButton() {
+    return cy.get(this.saveFacilityOwnershipButton);
   }
 
   getActionsButton() {
-    return cy.get(this.selectors.actions_button);
+    return cy.get(this.actionsButton);
   }
 
-  getEditButton() {
-    return cy.get(this.selectors.edit_button);
+  getEditFacilityOwnershipButton() {
+    return cy.get(this.editFacilityOwnershipButton);
   }
 
   getSaveChangesButton() {
-    return cy.get(this.selectors.save_changes_button);
+    return cy.get(this.saveChangesButton);
   }
 
-
-  login(username: string, password: string): void {
-    //  Implementation needs refinement based on actual login form structure.  This is a placeholder.
-    cy.get('input[type="text"]').type(username); // Replace with accurate selector
-    cy.get('input[type="password"]').type(password); // Replace with accurate selector
-    this.getLoginButton().click();
-  }
-
-  navigateToProductRecordPage(productId: string, hsNumber: string, productNumber: string): void {
-    const url = `https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/gtm/product-classification/product-record?productId=${productId}&hsNumber=${hsNumber}&productNumber=${productNumber}&countryCode=US`;
-    this.getProductRecordPageLink().invoke('attr', 'href').should('include', url).click();
-
-  }
-
-  scrollToFacilityOwnership(): void {
-    this.getFacilityOwnershipSection().scrollIntoView();
-  }
-
-  addFacilityOwnership(facilityOwnershipValue: string): void {
+  addFacilityOwnership(facilityOwnershipValue: string) {
     this.getAddFacilityOwnershipButton().click();
     this.getFacilityOwnershipDropdown().select(facilityOwnershipValue);
-    this.getSaveButton().click();
+    this.getSaveFacilityOwnershipButton().click();
   }
 
-  editFacilityOwnership(facilityOwnershipValue: string): void {
-    this.getActionsButton().first().click();//Assumes at least one Actions button exists.  Error handling needed for no records.
-    this.getEditButton().click();
-    //This section needs refinement based on the Edit popup's structure.  Placeholders are used below.
-    cy.get('input[name="facilityOwnership"]').clear().type(facilityOwnershipValue); //Replace with accurate selector
+  editFacilityOwnership(facilityOwnershipValue: string) {
+    this.getActionsButton().first().click(); // Assumes multiple actions buttons are possible. Selects first one.
+    this.getEditFacilityOwnershipButton().click();
+    // Add logic to change the facility ownership value in the edit popup.  This requires selectors for the edit input field.
+    // Example (assuming an input field with data-testid='facility-ownership-input'):
+    // cy.get('[data-testid="facility-ownership-input"]').clear().type(facilityOwnershipValue);
     this.getSaveChangesButton().click();
-
   }
-}
 
-export default TestCase937167;
+
+  navigateToProductRecordPage(productId: string, hsNumber: string, productNumber: string) {
+    const url = `https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/gtm/product-classification/product-record?productId=${productId}&hsNumber=${hsNumber}&productNumber=${productNumber}&countryCode=US`;
+    cy.visit(url);
+  }
+
+  verifyPageLoad() {
+    cy.url().should('include', '/product-classification/product-record');
+  }
+
+
+}
 ```
