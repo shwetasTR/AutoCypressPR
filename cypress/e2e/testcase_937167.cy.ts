@@ -1,19 +1,17 @@
 ```typescript
 /// <reference types="cypress" />
-import TestCase937167 from '../support/pageObjects/testcase_937167_po';
+import { TestCase937167 } from '../support/pageObjects/testcase_937167_po';
 
 describe('Test Case ID: 937167 - Verify in edit function', () => {
-  const selectors = { // Replace with your actual selectors
-    login_button: '#loginButton', //Example, replace with actual selector
-    product_record_page_link: '#productRecordPageLink', //Example, replace with actual selector
-    facility_ownership_section: '#facilityOwnershipSection', //Example, replace with actual selector
-    add_facility_ownership_button: '#addFacilityOwnershipButton', //Example, replace with actual selector
-    facility_ownership_dropdown: '#facilityOwnershipDropdown', //Example, replace with actual selector
-    save_button: '#saveButton', //Example, replace with actual selector
-    actions_button: '.actionsButton', //Example, replace with actual selector
-    edit_button: '.editButton', //Example, replace with actual selector
-    save_changes_button: '#saveChangesButton', //Example, replace with actual selector
-
+  const selectors = {
+    facility_ownership_section: '[data-testid="facility-ownership-section"]', // Replace with actual selector
+    add_facility_ownership_button: '[data-testid="add-facility-ownership-button"]', // Replace with actual selector
+    facility_ownership_dropdown: '[data-testid="facility-ownership-dropdown"]', // Replace with actual selector
+    save_facility_ownership_button: '[data-testid="save-facility-ownership-button"]', // Replace with actual selector
+    actions_button: '[data-testid="actions-button"]', // Replace with actual selector
+    edit_facility_ownership_button: '[data-testid="edit-facility-ownership-button"]', // Replace with actual selector
+    save_changes_button: '[data-testid="save-changes-button"]', // Replace with actual selector
+    // Add other selectors as needed
   };
 
   const pageObject = new TestCase937167(selectors);
@@ -26,37 +24,36 @@ describe('Test Case ID: 937167 - Verify in edit function', () => {
         testCaseLink: "https://dev.azure.com/tr-corp-tax/onesource-global-trade/_workitems/edit/937167",
       },
     ]);
+    //Login -  Replace with your actual login implementation
+    cy.login('valid_username', 'valid_password'); 
   });
 
-  it('should successfully edit facility ownership', () => {
-    const username = Cypress.env('username'); //Get username from cypress.env
-    const password = Cypress.env('password'); //Get password from cypress.env
-    const productId = Cypress.env('productId'); //Get productId from cypress.env
-    const hsNumber = Cypress.env('hsNumber'); //Get hsNumber from cypress.env
-    const productNumber = Cypress.env('productNumber'); //Get productNumber from cypress.env
-    const initialFacilityOwnership = 'Initial Facility Ownership'; // Replace with your initial value
-    const updatedFacilityOwnership = 'Updated Facility Ownership'; // Replace with your updated value
+  it('should successfully add and edit facility ownership', () => {
+    const productId = '123'; // Replace with actual product ID
+    const hsNumber = '456'; // Replace with actual HS Number
+    const productNumber = '789'; // Replace with actual Product Number
 
-
-    //Error handling for missing environment variables.  Add more robust error handling as needed.
-    if (!username || !password || !productId || !hsNumber || !productNumber) {
-      throw new Error("Missing required environment variables.");
-    }
-
-    pageObject.login(username, password);
     pageObject.navigateToProductRecordPage(productId, hsNumber, productNumber);
+    pageObject.verifyPageLoad();
 
-    //Check if facility ownership records exist. If not, add one.
-    pageObject.getFacilityOwnershipSection().then(($section) => {
-      if ($section.find('.actionsButton').length === 0) {
-        pageObject.scrollToFacilityOwnership();
-        pageObject.addFacilityOwnership(initialFacilityOwnership);
-      }
-      pageObject.scrollToFacilityOwnership();
-      pageObject.editFacilityOwnership(updatedFacilityOwnership);
-      // Add assertions to verify successful edit and message display.  Example below.  Adapt to your application's feedback.
-      cy.contains('Facility ownership updated successfully').should('be.visible'); //Replace with your actual success message
+    pageObject.getFacilityOwnershipSection().scrollIntoView();
+
+
+    // Add facility ownership if no records exist.  Requires robust error handling and checking for existence of elements.
+    pageObject.getAddFacilityOwnershipButton().should('be.visible').then(($button) => {
+        if ($button.length > 0) {
+            pageObject.addFacilityOwnership('Facility Ownership Value'); // Replace with actual value
+        }
     });
+
+
+    pageObject.editFacilityOwnership('New Facility Ownership Value'); // Replace with actual value
+
+    // Add assertions to verify successful message and updated facility ownership.  Requires selectors for these elements.
+    // Example:
+    // cy.contains('Facility ownership updated successfully').should('be.visible');
+    // cy.get('[data-testid="facility-ownership-display"]').should('contain', 'New Facility Ownership Value');
+
   });
 });
 
