@@ -1,11 +1,14 @@
 ```typescript
 class TestCase937167 {
-  private selectors: any;
-
-  constructor(selectors: any) {
-    this.selectors = selectors;
-  }
-
+  private selectors = {
+    facility_ownership_section: "#contents-facilityOwnership",
+    add_facility_ownership_button: "button[data-testid='add-facility-ownership']",
+    facility_ownership_dropdown: "select[data-testid='facility-ownership-dropdown']",
+    save_facility_ownership_button: "button[data-testid='save-facility-ownership']",
+    actions_button: "button[data-testid='actions-button']",
+    edit_facility_ownership_button: "button[data-testid='edit-facility-ownership']",
+    save_changes_button: "button[data-testid='save-changes']",
+  };
 
   get facilityOwnershipSection() {
     return cy.get(this.selectors.facility_ownership_section);
@@ -35,11 +38,11 @@ class TestCase937167 {
     return cy.get(this.selectors.save_changes_button);
   }
 
+
   navigateToProductRecordPage(productId: string, hsNumber: string, productNumber: string) {
     const url = `https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/gtm/product-classification/product-record?productId=${productId}&hsNumber=${hsNumber}&productNumber=${productNumber}&countryCode=US`;
     cy.visit(url);
   }
-
 
   addFacilityOwnership(facilityOwnershipValue: string) {
     this.addFacilityOwnershipButton.click();
@@ -48,25 +51,20 @@ class TestCase937167 {
   }
 
   editFacilityOwnership(facilityOwnershipValue: string) {
-    //This assumes at least one facility ownership exists.  Robust error handling would be needed in a production environment.
-    this.actionsButton.first().click(); //Click the first actions button.  Needs improvement for multiple facilities.
+    this.actionsButton.click();
     this.editFacilityOwnershipButton.click();
-    this.facilityOwnershipDropdown.select(facilityOwnershipValue);
+    // Assuming a way to interact with the edit popup's input field.  Replace with actual selector.
+    cy.get('[data-testid="facility-ownership-input"]').clear().type(facilityOwnershipValue);
     this.saveChangesButton.click();
 
   }
 
-  verifyPageLoadsSuccessfully(){
-    cy.url().should('include', '/product-classification/product-record'); // Adjust as needed for your specific URL pattern.
+  verifyPageLoad() {
+    cy.url().should('include', '/product-classification/product-record');
   }
 
-  verifyFacilityOwnershipAdded(facilityOwnershipValue: string){
-    this.facilityOwnershipSection.contains(facilityOwnershipValue).should('be.visible');
-  }
-
-  verifySuccessfulMessage(){
-    //Implement a check for a success message.  The exact implementation depends on how success is indicated on the page.
-    cy.contains('Success!').should('be.visible'); //Replace 'Success!' with the actual success message text.
+  scrollIntoView(){
+    this.facilityOwnershipSection.scrollIntoView();
   }
 
 
