@@ -1,17 +1,9 @@
 ```typescript
 class TestCase937167 {
-  private selectors: { [key: string]: string };
+  private selectors: any;
 
-  constructor() {
-    this.selectors = {
-      facility_ownership_section: "#contents-facilityOwnership",
-      add_facility_ownership_button: "button[aria-label='Add Facility Ownership']",
-      facility_ownership_dropdown: "select[name='facilityOwnership']",
-      save_facility_ownership_button: "button[type='submit']",
-      actions_button: "button[aria-label='Actions']",
-      edit_facility_ownership_button: "button[aria-label='Edit']",
-      save_changes_button: "button[type='submit']",
-    };
+  constructor(selectors: any) {
+    this.selectors = selectors;
   }
 
 
@@ -35,8 +27,8 @@ class TestCase937167 {
     return cy.get(this.selectors.actions_button);
   }
 
-  get editFacilityOwnershipButton() {
-    return cy.get(this.selectors.edit_facility_ownership_button);
+  get editActionButton() {
+    return cy.get(this.selectors.edit_action_button);
   }
 
   get saveChangesButton() {
@@ -57,20 +49,21 @@ class TestCase937167 {
 
   editFacilityOwnership(facilityOwnershipValue: string) {
     this.actionsButton.click();
-    this.editFacilityOwnershipButton.click();
-    //Assuming a similar dropdown exists in the edit popup
-    this.facilityOwnershipDropdown.select(facilityOwnershipValue);
+    this.editActionButton.click();
+    // Assuming there's an input field to change facility ownership.  Replace with actual selector.
+    cy.get('input[data-testid="facility-ownership-input"]').clear().type(facilityOwnershipValue);
     this.saveChangesButton.click();
 
   }
 
-  verifyPageLoad() {
+  verifyPageLoadedSuccessfully(){
     cy.url().should('include', '/product-classification/product-record');
   }
 
-  verifyFacilityOwnershipAdded() {
-    // Add assertion to check if the facility ownership is added successfully.  This will depend on your UI.  Example:
-    cy.contains('Facility Ownership Added Successfully').should('be.visible'); // Replace with your actual success message
+  verifyFacilityOwnershipAdded(){
+    //Add assertion to check if facility ownership is added successfully.  This will depend on your UI.  Example:
+    cy.contains('Facility Ownership Added Successfully').should('be.visible');
+
   }
 
   scrollIntoView(){
@@ -78,4 +71,6 @@ class TestCase937167 {
   }
 
 }
+
+export default TestCase937167;
 ```
