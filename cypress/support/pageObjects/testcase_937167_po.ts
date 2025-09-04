@@ -1,17 +1,9 @@
 ```typescript
 class TestCase937167 {
-  private selectors: { [key: string]: string }
+  private selectors: any;
 
-  constructor() {
-    this.selectors = {
-      facility_ownership_section: "#contents-facilityOwnership",
-      add_facility_ownership_button: "button[data-testid='add-facility-ownership']",
-      facility_ownership_dropdown: "select[name='facilityOwnership']",
-      save_facility_ownership_button: "button[type='submit']",
-      actions_button: "button[data-testid='actions-button']",
-      edit_action_button: "button[data-testid='edit-action']",
-      save_changes_button: "button[type='submit']"
-    };
+  constructor(selectors: any) {
+    this.selectors = selectors;
   }
 
 
@@ -31,12 +23,12 @@ class TestCase937167 {
     return cy.get(this.selectors.save_facility_ownership_button);
   }
 
-  get actionsButton() {
-    return cy.get(this.selectors.actions_button);
+  get facilityOwnershipActionsMenu() {
+    return cy.get(this.selectors.facility_ownership_actions_menu);
   }
 
-  get editActionButton() {
-    return cy.get(this.selectors.edit_action_button);
+  get editFacilityOwnershipButton() {
+    return cy.get(this.selectors.edit_facility_ownership_button);
   }
 
   get saveChangesButton() {
@@ -55,22 +47,28 @@ class TestCase937167 {
     this.saveFacilityOwnershipButton.click();
   }
 
-  editFacilityOwnership(facilityOwnershipValue: string) {
-    this.actionsButton.click();
-    this.editActionButton.click();
-    //Assuming a selector for the facility ownership field exists in the edit popup. Replace with the actual selector
-    cy.get("input[name='facilityOwnership']").clear().type(facilityOwnershipValue); 
+  editFacilityOwnership(newFacilityOwnershipValue: string) {
+    this.facilityOwnershipActionsMenu.first().click(); //Assumes actions menu is present for at least one facility.  Error handling might be needed for robustness.
+    this.editFacilityOwnershipButton.click();
+    // Assuming a method to interact with the edit popup exists,  replace with actual implementation.
+    cy.get('input[name="facilityOwnership"]').clear().type(newFacilityOwnershipValue); // Placeholder - replace with actual selector
     this.saveChangesButton.click();
 
   }
 
   verifyPageLoad(){
-    cy.url().should('include', '/product-classification/product-record');
+    cy.url().should('include', '/product-classification/product-record'); // Adjust as needed for your URL structure
   }
 
-  scrollFacilityOwnership(){
+  verifyFacilityOwnershipAdded(facilityOwnershipValue: string){
+      //Add assertion to check if the facility ownership is added successfully.  This will depend on the UI structure.  Example below is a placeholder.
+      cy.contains(facilityOwnershipValue).should('be.visible');
+  }
+
+  scrollIntoView(){
     this.facilityOwnershipSection.scrollIntoView();
   }
-
 }
+
+export default TestCase937167;
 ```
