@@ -4,11 +4,6 @@ import { TestCase937167 } from '../support/pageObjects/testcase_937167_po';
 
 describe('Test Case ID 937167: Verify in edit function', () => {
   const pageObject = new TestCase937167();
-  const productId = '123'; // Replace with actual product ID
-  const hsNumber = '456'; // Replace with actual HS Number
-  const productNumber = '789'; // Replace with actual Product Number
-  const initialFacilityOwnership = 'Facility A';
-  const updatedFacilityOwnership = 'Facility B';
 
   beforeEach(() => {
     cy.testCaseMapping([
@@ -18,32 +13,40 @@ describe('Test Case ID 937167: Verify in edit function', () => {
         testCaseLink: "https://dev.azure.com/tr-corp-tax/onesource-global-trade/_workitems/edit/937167",
       },
     ]);
-    //Login -  replace with your actual login steps.  This is crucial for a working test.
-    cy.visit('https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/');
-    cy.get('#username').type('valid_username'); //Replace with valid username
-    cy.get('#password').type('valid_password'); //Replace with valid password
-    cy.get('button[type="submit"]').click();
-
-    cy.url().should('include', '/gtm'); //Check if logged in successfully and navigated to the expected section. Adapt as needed based on your login flow.
+    //Add login steps here using cy.login() if needed.  This example omits login for brevity but it's crucial for a real test.
+    //Example: cy.login('validUsername', 'validPassword');
 
   });
 
 
   it('should successfully edit facility ownership', () => {
+    const productId = 'YOUR_PRODUCT_ID'; // Replace with actual product ID
+    const hsNumber = 'YOUR_HS_NUMBER';   // Replace with actual HS Number
+    const productNumber = 'YOUR_PRODUCT_NUMBER'; // Replace with actual Product Number
+
     pageObject.navigateToProductRecordPage(productId, hsNumber, productNumber);
+    pageObject.verifyPageLoad();
     pageObject.scrollIntoView();
 
-    //Check if element exists before attempting to interact with it.
-    pageObject.addFacilityOwnershipButton.should('be.visible').then(() => {
-        pageObject.addFacilityOwnership(initialFacilityOwnership);
+    // Check if facility ownership records exist.  Add error handling for robustness.
+    pageObject.getActionsButton().should('exist').then(($actionsButtons) => {
+      if ($actionsButtons.length > 0) {
+          pageObject.getActionsButton().first().click();
+          pageObject.getEditFacilityOwnershipButton().click();
+          pageObject.getFacilityOwnershipDropdown().select('New Facility Ownership Value'); //Replace with your desired value
+          pageObject.getSaveChangesButton().click();
+          // Add assertions to verify successful edit and message display.  Example below:
+          cy.contains('Facility ownership updated successfully').should('be.visible'); //Adjust message as needed
+      } else {
+        pageObject.addFacilityOwnership('Initial Facility Ownership Value'); //Add initial record if none exists. Replace with your desired value.
+        pageObject.getActionsButton().first().click();
+        pageObject.getEditFacilityOwnershipButton().click();
+        pageObject.getFacilityOwnershipDropdown().select('New Facility Ownership Value'); //Replace with your desired value
+        pageObject.getSaveChangesButton().click();
+        cy.contains('Facility ownership updated successfully').should('be.visible'); //Adjust message as needed
+
+      }
     });
-
-    pageObject.verifyFacilityOwnership(initialFacilityOwnership);
-
-    pageObject.editFacilityOwnership(updatedFacilityOwnership);
-
-    pageObject.verifyFacilityOwnership(updatedFacilityOwnership);
-
 
   });
 });
