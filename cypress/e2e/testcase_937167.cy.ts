@@ -1,17 +1,16 @@
 ```typescript
 /// <reference types="cypress" />
-import { TestCase937167 } from '../support/pageObjects/testcase_937167_po';
+import TestCase937167 from "../support/pageObjects/testcase_937167_po";
 
-describe('Test Case ID: 937167 - Verify Edit Function', () => {
+describe("Test Case ID: 937167 - Verify in edit function.", () => {
   const pageObject = new TestCase937167();
-  const username = Cypress.env('username'); //Retrieve username from cypress.env.json
-  const password = Cypress.env('password'); //Retrieve password from cypress.env.json
-  const productId = Cypress.env('productId'); //Retrieve productId from cypress.env.json
-  const hsNumber = Cypress.env('hsNumber'); //Retrieve hsNumber from cypress.env.json
-  const productNumber = Cypress.env('productNumber'); //Retrieve productNumber from cypress.env.json
+  const username = Cypress.env('username'); //Get username from cypress.env
+  const password = Cypress.env('password'); //Get password from cypress.env
+  const productId = Cypress.env('productId'); //Get productId from cypress.env
+  const hsNumber = Cypress.env('hsNumber'); //Get hsNumber from cypress.env
+  const productNumber = Cypress.env('productNumber'); //Get productNumber from cypress.env
 
-
-  beforeEach(() => {
+  before(() => {
     cy.testCaseMapping([
       {
         testCaseId: "ADO:937167",
@@ -21,22 +20,22 @@ describe('Test Case ID: 937167 - Verify Edit Function', () => {
     ]);
   });
 
-  it('should successfully edit facility ownership', () => {
+
+  it("should successfully edit facility ownership", () => {
     pageObject.login(username, password);
     pageObject.navigateToProductRecordPage(productId, hsNumber, productNumber);
+    pageObject.verifyPageLoad();
+    pageObject.navigateToFacilityOwnership();
 
-    //Ensure the facility ownership section is visible before proceeding.
-    pageObject.getFacilityOwnershipSection().scrollIntoView().should('be.visible');
-
-    //Check if records exist. If not, add a record first.
-    pageObject.getActionsButton().should(($el) => {
-      if ($el.length === 0) {
-        pageObject.addFacilityOwnership('Facility Ownership Value 1'); // Replace with actual value
+    //Check if facility ownership records exist. If not, add one.
+    cy.get(pageObject.getActionsButtonSelector()).then(($actions) => {
+      if ($actions.length === 0) {
+        pageObject.addFacilityOwnership("Test Facility Ownership");
       }
     });
 
-    pageObject.editFacilityOwnership('Facility Ownership Value 2'); //Replace with actual value.
-
+    pageObject.editFacilityOwnership("Updated Facility Ownership");
+    pageObject.verifySuccessMessage();
   });
 });
 
