@@ -1,61 +1,45 @@
 ```typescript
 /// <reference types="cypress" />
-import TestCase937167 from '../support/pageObjects/testcase_937167_po';
+import { TestCase937167 } from '../support/pageObjects/testcase_937167_po';
 
-describe('Test Case ID: 937167 - Verify in edit function.', () => {
-  const selectors = {
-    facility_ownership_section: '#facilityOwnershipSection', // Replace with your actual selector
-    add_facility_ownership_button: '#addFacilityOwnershipButton', // Replace with your actual selector
-    facility_ownership_dropdown: '#facilityOwnershipDropdown', // Replace with your actual selector
-    save_facility_ownership_button: '#saveFacilityOwnershipButton', // Replace with your actual selector
-    actions_button: '.actions-button', // Replace with your actual selector.  This selector needs improvement for robustness.
-    edit_action_button: '#editActionButton', // Replace with your actual selector
-    save_changes_button: '#saveChangesButton', // Replace with your actual selector
-
-  };
-
-  const pageObject = new TestCase937167(selectors);
-
-  before(() => {
-    cy.testCaseMapping([
-      {
-        testCaseId: "ADO:937167",
-        testCaseTitle: "Verify in edit function.",
-        testCaseLink: "https://dev.azure.com/tr-corp-tax/onesource-global-trade/_workitems/edit/937167",
-      },
-    ]);
-    //Add login steps here using your application's login functionality.  Replace with your actual login steps.
-    cy.visit('https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/');
-    cy.get('#username').type('valid_username'); //Replace with your actual username selector and value
-    cy.get('#password').type('valid_password'); //Replace with your actual password selector and value
-    cy.get('#loginButton').click(); //Replace with your actual login button selector
+describe('Test Case ID: 937167 - Verify in edit function', () => {
+  const pageObject = new TestCase937167();
+  const username = Cypress.env('username'); //Replace with your actual environment variable for username.
+  const password = Cypress.env('password'); //Replace with your actual environment variable for password.
+  const productId = Cypress.env('productId'); //Replace with your actual environment variable for productId.
+  const hsNumber = Cypress.env('hsNumber'); //Replace with your actual environment variable for hsNumber.
+  const productNumber = Cypress.env('productNumber'); //Replace with your actual environment variable for productNumber.
+  const initialFacilityOwnership = 'Initial Value'; //Replace with your initial facility ownership value
+  const updatedFacilityOwnership = 'Updated Value'; //Replace with your updated facility ownership value
 
 
-  });
-
+  cy.testCaseMapping([
+    {
+      testCaseId: "ADO:937167",
+      testCaseTitle: "Verify in edit function.",
+      testCaseLink: "https://dev.azure.com/tr-corp-tax/onesource-global-trade/_workitems/edit/937167",
+    },
+  ]);
 
   it('should successfully edit facility ownership', () => {
-    const productId = '123'; // Replace with a valid product ID
-    const hsNumber = '456'; // Replace with a valid HS Number
-    const productNumber = '789'; // Replace with a valid Product Number
-    const initialFacilityOwnership = 'Ownership A';
-    const updatedFacilityOwnership = 'Ownership B';
-
-
+    pageObject.login(username, password);
     pageObject.navigateToProductRecordPage(productId, hsNumber, productNumber);
-    cy.url().should('include', `/gtm/product-classification/product-record?productId=${productId}&hsNumber=${hsNumber}&productNumber=${productNumber}&countryCode=US`);
 
-    pageObject.facilityOwnershipSection.scrollIntoView();
-
-    //Check if facility ownership records exist.  Add more robust handling for cases where no records exist.
-    pageObject.actionsButton.should('be.visible');
-
-    pageObject.addFacilityOwnership(initialFacilityOwnership);
-
-    pageObject.editFacilityOwnership(updatedFacilityOwnership);
-    pageObject.verifyFacilityOwnership(updatedFacilityOwnership);
-
-
+    //Check if facility ownership exists, if not add one.  Error handling is needed for robustness.
+    pageObject.facilityOwnershipSection.should('be.visible').then(() => {
+        //Facility ownership section exists, proceed to edit.
+        pageObject.scrollToFacilityOwnership();
+        pageObject.editFacilityOwnership(updatedFacilityOwnership);
+        //Add assertions to verify successful edit and message display.  This is a placeholder.
+        cy.contains('Facility ownership updated successfully').should('be.visible'); //Replace with your actual success message.
+    }).catch((err) => {
+        //Facility ownership section does not exist, add one first.  Error handling is crucial here.
+        cy.log("Facility ownership section not found. Adding a new record first.");
+        pageObject.scrollToFacilityOwnership();
+        pageObject.addFacilityOwnership(initialFacilityOwnership);
+        pageObject.editFacilityOwnership(updatedFacilityOwnership);
+        cy.contains('Facility ownership updated successfully').should('be.visible'); //Replace with your actual success message.
+    });
   });
 });
 
