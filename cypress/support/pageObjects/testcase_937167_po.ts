@@ -1,88 +1,85 @@
 ```typescript
 class TestCase937167 {
-  private selectors: { [key: string]: string };
+  private selectors = {
+    facilityOwnershipSection: "#contents-panel a[href*='facilityOwnership']",
+    addFacilityOwnershipButton: "button[aria-label='Add']",
+    facilityOwnershipDropdown: "select[name='facilityOwnership']",
+    saveFacilityOwnershipButton: "button[type='submit']",
+    actionsButton: "tr td:last-child button",
+    editOptionInActionsMenu: "li a[href*='edit']",
+    saveChangesButton: "button[type='submit']",
+    successfulMessage: ".success-message",
+  };
 
-  constructor(selectors: { [key: string]: string }) {
-    this.selectors = selectors;
-  }
 
-
-  get facilityOwnershipSection() {
-    return cy.get(this.selectors.facility_ownership_section);
-  }
-
-  get addFacilityOwnershipButton() {
-    return cy.get(this.selectors.add_facility_ownership_button);
-  }
-
-  get facilityOwnershipDropdown() {
-    return cy.get(this.selectors.facility_ownership_dropdown);
-  }
-
-  get saveFacilityOwnershipButton() {
-    return cy.get(this.selectors.save_facility_ownership_button);
-  }
-
-  get actionsButton() {
-    return cy.get(this.selectors.actions_button);
-  }
-
-  get editFacilityOwnershipButton() {
-    return cy.get(this.selectors.edit_facility_ownership_button);
-  }
-
-  get saveChangesButton() {
-    return cy.get(this.selectors.save_changes_button);
-  }
-
-  login(username: string, password: string) {
-    //Implementation for login using provided username and password.  This needs to be fleshed out based on your actual login UI.
+  login(username: string, password: string): void {
+    //Implementation for login using username and password.  This will depend on your login form selectors.  Example below:
     cy.visit("https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/");
-    //Add selectors and actions for username and password fields and login button here.  Example below.  Replace with your actual selectors.
-    cy.get('#username').type(username);
-    cy.get('#password').type(password);
+    cy.get('input[type="text"]').type(username);
+    cy.get('input[type="password"]').type(password);
     cy.get('button[type="submit"]').click();
 
-    //Assertion to check successful login.  Replace with your actual assertion.
-    cy.contains('Welcome').should('be.visible');
+    //Add assertions to verify successful login. For Example:
+    cy.url().should('include', '/gtm'); // Or another appropriate assertion based on your application's post-login URL.
 
   }
 
-
-  navigateToProductRecordPage(productId: string, hsNumber: string, productNumber: string) {
+  navigateToProductRecordPage(productId: string, hsNumber: string, productNumber: string): void {
     const url = `https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/gtm/product-classification/product-record?productId=${productId}&hsNumber=${hsNumber}&productNumber=${productNumber}&countryCode=US`;
     cy.visit(url);
-    //Assertion to check successful navigation.  Replace with your actual assertion.
-    cy.url().should('include', '/product-classification/product-record');
-  }
-
-  addFacilityOwnership(facilityOwnershipValue: string) {
-    this.addFacilityOwnershipButton.click();
-    this.facilityOwnershipDropdown.select(facilityOwnershipValue);
-    this.saveFacilityOwnershipButton.click();
-
-    //Assertion to check successful addition. Replace with your actual assertion.
-    cy.contains(`Facility Ownership: ${facilityOwnershipValue}`).should('be.visible');
+    cy.url().should('include', `/product-record?productId=${productId}`); //Verify correct URL
 
   }
 
-  editFacilityOwnership(newFacilityOwnershipValue: string) {
-    this.actionsButton.click();
-    this.editFacilityOwnershipButton.click();
-    //Add selector and action to change the facility ownership field.  Replace with your actual selector.
-    cy.get('#facilityOwnership').clear().type(newFacilityOwnershipValue);
-    this.saveChangesButton.click();
-
-    //Assertion to check successful edit and message. Replace with your actual assertion.
-    cy.contains(`Facility Ownership updated successfully`).should('be.visible');
-    cy.contains(`Facility Ownership: ${newFacilityOwnershipValue}`).should('be.visible');
-
+  getFacilityOwnershipSection(): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy.get(this.selectors.facilityOwnershipSection);
   }
 
-  scrollFacilityOwnershipSection() {
-    this.facilityOwnershipSection.scrollIntoView();
+  getAddFacilityOwnershipButton(): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy.get(this.selectors.addFacilityOwnershipButton);
+  }
+
+  getFacilityOwnershipDropdown(): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy.get(this.selectors.facilityOwnershipDropdown);
+  }
+
+  getSaveFacilityOwnershipButton(): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy.get(this.selectors.saveFacilityOwnershipButton);
+  }
+
+  getActionsButton(): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy.get(this.selectors.actionsButton);
+  }
+
+  getEditOptionInActionsMenu(): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy.get(this.selectors.editOptionInActionsMenu);
+  }
+
+  getSaveChangesButton(): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy.get(this.selectors.saveChangesButton);
+  }
+
+  getSuccessfulMessage(): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy.get(this.selectors.successfulMessage);
+  }
+
+
+  addFacilityOwnership(facilityOwnershipValue: string): void {
+    this.getAddFacilityOwnershipButton().click();
+    this.getFacilityOwnershipDropdown().select(facilityOwnershipValue);
+    this.getSaveFacilityOwnershipButton().click();
+    // Add assertion to check for successful addition.  Example:
+    this.getSuccessfulMessage().should('be.visible'); //Replace with actual success message check
+  }
+
+  editFacilityOwnership(newFacilityOwnershipValue: string): void {
+    this.getActionsButton().first().click(); // Clicks the first Actions button.  Handle multiple rows as needed.
+    this.getEditOptionInActionsMenu().click();
+    //Find and interact with the edit form elements for facility ownership.  Selectors will be application specific.  Example:
+    cy.get('select[name="facilityOwnership"]').select(newFacilityOwnershipValue); //Replace with your selector
+    this.getSaveChangesButton().click();
+    this.getSuccessfulMessage().should('be.visible'); //Replace with actual success message check
+
   }
 }
-
-export default TestCase937167;
 ```
