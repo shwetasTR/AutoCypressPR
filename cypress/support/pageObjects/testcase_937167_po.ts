@@ -1,12 +1,16 @@
 ```typescript
 class TestCase937167 {
-  private selectors: { [key: string]: string };
+  private selectors = {
+    facility_ownership_section: "#contents-facilityOwnership",
+    add_facility_ownership_button: "button[data-testid='add-facility-ownership']",
+    facility_ownership_dropdown: "select[data-testid='facility-ownership-dropdown']",
+    save_facility_ownership_button: "button[data-testid='save-facility-ownership']",
+    actions_button: "button[data-testid='actions-button']",
+    edit_action_button: "button[data-testid='edit-action']",
+    save_changes_button: "button[data-testid='save-changes']",
+  };
 
-  constructor(selectors: { [key: string]: string }) {
-    this.selectors = selectors;
-  }
-
-
+  //Getters for selectors
   get facilityOwnershipSection() {
     return cy.get(this.selectors.facility_ownership_section);
   }
@@ -35,11 +39,26 @@ class TestCase937167 {
     return cy.get(this.selectors.save_changes_button);
   }
 
+
+  // Actions methods
+  login(username: string, password: string) {
+    //Implementation for login using username and password.  Replace with actual login steps.
+    cy.visit('https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/');
+    //Add your login commands here.  This is a placeholder.
+    cy.get('#username').type(username);
+    cy.get('#password').type(password);
+    cy.get('#submit').click();
+
+  }
+
   navigateToProductRecordPage(productId: string, hsNumber: string, productNumber: string) {
     const url = `https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/gtm/product-classification/product-record?productId=${productId}&hsNumber=${hsNumber}&productNumber=${productNumber}&countryCode=US`;
     cy.visit(url);
   }
 
+  scrollToFacilityOwnership() {
+    this.facilityOwnershipSection.scrollIntoView();
+  }
 
   addFacilityOwnership(facilityOwnershipValue: string) {
     this.addFacilityOwnershipButton.click();
@@ -48,20 +67,12 @@ class TestCase937167 {
   }
 
   editFacilityOwnership(facilityOwnershipValue: string) {
-      //This assumes at least one facility ownership record exists.  Error handling should be added for cases where no records exist.
-    this.actionsButton.first().click(); //Click actions on the first available facility.  Improve selector for more robustness.
-    this.editActionButton.click();
-    // Add code here to locate and modify the facility ownership input field based on your application's structure.  This will likely involve finding an input field within the modal.  Example below is a placeholder.
-    cy.get('input[type="text"][name="facilityOwnership"]').clear().type(facilityOwnershipValue);
-    this.saveChangesButton.click();
-
+      this.actionsButton.click(); //Assumes actions button is visible and selects the first available.  Add logic to select specific action button if needed.
+      this.editActionButton.click();
+      //Add logic to locate and update the facility ownership field based on your UI.  This is a placeholder.
+      cy.get('[data-testid="facility-ownership-input"]').clear().type(facilityOwnershipValue);
+      this.saveChangesButton.click();
   }
 
-  verifyFacilityOwnership(facilityOwnershipValue: string){
-    //Add assertions here to verify that the facility ownership has been successfully updated. This will require a selector to locate the updated facility ownership display.  Example below is a placeholder.
-    cy.contains('p', facilityOwnershipValue).should('be.visible');
-  }
 }
-
-export default TestCase937167;
 ```
