@@ -1,16 +1,12 @@
 ```typescript
 class TestCase937167 {
-  private selectors = {
-    facility_ownership_section: "#contents-facilityOwnership",
-    add_facility_ownership_button: "button[data-testid='add-facility-ownership']",
-    facility_ownership_dropdown: "select[data-testid='facility-ownership-dropdown']",
-    save_facility_ownership_button: "button[data-testid='save-facility-ownership']",
-    actions_button: "button[data-testid='actions-button']",
-    edit_action_button: "button[data-testid='edit-action']",
-    save_changes_button: "button[data-testid='save-changes']",
-  };
+  private selectors: { [key: string]: string };
 
-  //Getters for selectors
+  constructor(selectors: { [key: string]: string }) {
+    this.selectors = selectors;
+  }
+
+
   get facilityOwnershipSection() {
     return cy.get(this.selectors.facility_ownership_section);
   }
@@ -31,48 +27,62 @@ class TestCase937167 {
     return cy.get(this.selectors.actions_button);
   }
 
-  get editActionButton() {
-    return cy.get(this.selectors.edit_action_button);
+  get editFacilityOwnershipButton() {
+    return cy.get(this.selectors.edit_facility_ownership_button);
   }
 
   get saveChangesButton() {
     return cy.get(this.selectors.save_changes_button);
   }
 
-
-  // Actions methods
   login(username: string, password: string) {
-    //Implementation for login using username and password.  Replace with actual login steps.
-    cy.visit('https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/');
-    //Add your login commands here.  This is a placeholder.
+    //Implementation for login using provided username and password.  This needs to be fleshed out based on your actual login UI.
+    cy.visit("https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/");
+    //Add selectors and actions for username and password fields and login button here.  Example below.  Replace with your actual selectors.
     cy.get('#username').type(username);
     cy.get('#password').type(password);
-    cy.get('#submit').click();
+    cy.get('button[type="submit"]').click();
+
+    //Assertion to check successful login.  Replace with your actual assertion.
+    cy.contains('Welcome').should('be.visible');
 
   }
+
 
   navigateToProductRecordPage(productId: string, hsNumber: string, productNumber: string) {
     const url = `https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/gtm/product-classification/product-record?productId=${productId}&hsNumber=${hsNumber}&productNumber=${productNumber}&countryCode=US`;
     cy.visit(url);
-  }
-
-  scrollToFacilityOwnership() {
-    this.facilityOwnershipSection.scrollIntoView();
+    //Assertion to check successful navigation.  Replace with your actual assertion.
+    cy.url().should('include', '/product-classification/product-record');
   }
 
   addFacilityOwnership(facilityOwnershipValue: string) {
     this.addFacilityOwnershipButton.click();
     this.facilityOwnershipDropdown.select(facilityOwnershipValue);
     this.saveFacilityOwnershipButton.click();
+
+    //Assertion to check successful addition. Replace with your actual assertion.
+    cy.contains(`Facility Ownership: ${facilityOwnershipValue}`).should('be.visible');
+
   }
 
-  editFacilityOwnership(facilityOwnershipValue: string) {
-      this.actionsButton.click(); //Assumes actions button is visible and selects the first available.  Add logic to select specific action button if needed.
-      this.editActionButton.click();
-      //Add logic to locate and update the facility ownership field based on your UI.  This is a placeholder.
-      cy.get('[data-testid="facility-ownership-input"]').clear().type(facilityOwnershipValue);
-      this.saveChangesButton.click();
+  editFacilityOwnership(newFacilityOwnershipValue: string) {
+    this.actionsButton.click();
+    this.editFacilityOwnershipButton.click();
+    //Add selector and action to change the facility ownership field.  Replace with your actual selector.
+    cy.get('#facilityOwnership').clear().type(newFacilityOwnershipValue);
+    this.saveChangesButton.click();
+
+    //Assertion to check successful edit and message. Replace with your actual assertion.
+    cy.contains(`Facility Ownership updated successfully`).should('be.visible');
+    cy.contains(`Facility Ownership: ${newFacilityOwnershipValue}`).should('be.visible');
+
   }
 
+  scrollFacilityOwnershipSection() {
+    this.facilityOwnershipSection.scrollIntoView();
+  }
 }
+
+export default TestCase937167;
 ```
