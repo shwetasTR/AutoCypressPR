@@ -48,23 +48,19 @@ class TestCase937167 {
   }
 
   editFacilityOwnership(facilityOwnershipValue: string) {
-    this.actionsButton.click();
+      //This assumes at least one facility ownership record exists.  Error handling should be added for cases where no records exist.
+    this.actionsButton.first().click(); //Click actions on the first available facility.  Improve selector for more robustness.
     this.editActionButton.click();
-    // Assuming a selector for the facility ownership input field exists.  Replace 'input[name="facilityOwnership"]' with the actual selector if different.
-    cy.get('input[name="facilityOwnership"]').clear().type(facilityOwnershipValue); 
+    // Add code here to locate and modify the facility ownership input field based on your application's structure.  This will likely involve finding an input field within the modal.  Example below is a placeholder.
+    cy.get('input[type="text"][name="facilityOwnership"]').clear().type(facilityOwnershipValue);
     this.saveChangesButton.click();
 
   }
 
-  verifyPageLoad() {
-    cy.url().should('include', '/product-classification/product-record');
+  verifyFacilityOwnership(facilityOwnershipValue: string){
+    //Add assertions here to verify that the facility ownership has been successfully updated. This will require a selector to locate the updated facility ownership display.  Example below is a placeholder.
+    cy.contains('p', facilityOwnershipValue).should('be.visible');
   }
-
-
-  scrollIntoView(){
-    this.facilityOwnershipSection.scrollIntoView();
-  }
-
 }
 
 export default TestCase937167;
