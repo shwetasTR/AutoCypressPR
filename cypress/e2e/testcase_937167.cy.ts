@@ -2,10 +2,16 @@
 /// <reference types="cypress" />
 import { TestCase937167 } from '../support/pageObjects/testcase_937167_po';
 
-describe('Test Case ID 937167: Verify in edit function', () => {
+describe('Test Case ID: 937167 - Verify Edit Function', () => {
   const pageObject = new TestCase937167();
+  const productId = 'YOUR_PRODUCT_ID'; // Replace with actual product ID
+  const hsNumber = 'YOUR_HS_NUMBER';     // Replace with actual HS Number
+  const productNumber = 'YOUR_PRODUCT_NUMBER'; // Replace with actual Product Number
+  const initialFacilityOwnership = 'Initial Value'; // Replace with initial value
+  const updatedFacilityOwnership = 'Updated Value'; // Replace with updated value
 
-  beforeEach(() => {
+
+  before(() => {
     cy.testCaseMapping([
       {
         testCaseId: "ADO:937167",
@@ -13,41 +19,31 @@ describe('Test Case ID 937167: Verify in edit function', () => {
         testCaseLink: "https://dev.azure.com/tr-corp-tax/onesource-global-trade/_workitems/edit/937167",
       },
     ]);
-    //Add login steps here using cy.login() if needed.  This example omits login for brevity but it's crucial for a real test.
-    //Example: cy.login('validUsername', 'validPassword');
+    //Login -  Replace with your actual login logic.  This is crucial!
+    cy.visit('https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/');
+    cy.get('#username').type('YOUR_USERNAME'); // Replace with your username
+    cy.get('#password').type('YOUR_PASSWORD'); // Replace with your password
+    cy.get('button[type="submit"]').click();
 
   });
 
-
-  it('should successfully edit facility ownership', () => {
-    const productId = 'YOUR_PRODUCT_ID'; // Replace with actual product ID
-    const hsNumber = 'YOUR_HS_NUMBER';   // Replace with actual HS Number
-    const productNumber = 'YOUR_PRODUCT_NUMBER'; // Replace with actual Product Number
-
+  it('should successfully add and edit facility ownership', () => {
     pageObject.navigateToProductRecordPage(productId, hsNumber, productNumber);
-    pageObject.verifyPageLoad();
+    cy.url().should('include', `/product-record?productId=${productId}&hsNumber=${hsNumber}&productNumber=${productNumber}&countryCode=US`);
+
     pageObject.scrollIntoView();
 
-    // Check if facility ownership records exist.  Add error handling for robustness.
-    pageObject.getActionsButton().should('exist').then(($actionsButtons) => {
-      if ($actionsButtons.length > 0) {
-          pageObject.getActionsButton().first().click();
-          pageObject.getEditFacilityOwnershipButton().click();
-          pageObject.getFacilityOwnershipDropdown().select('New Facility Ownership Value'); //Replace with your desired value
-          pageObject.getSaveChangesButton().click();
-          // Add assertions to verify successful edit and message display.  Example below:
-          cy.contains('Facility ownership updated successfully').should('be.visible'); //Adjust message as needed
-      } else {
-        pageObject.addFacilityOwnership('Initial Facility Ownership Value'); //Add initial record if none exists. Replace with your desired value.
-        pageObject.getActionsButton().first().click();
-        pageObject.getEditFacilityOwnershipButton().click();
-        pageObject.getFacilityOwnershipDropdown().select('New Facility Ownership Value'); //Replace with your desired value
-        pageObject.getSaveChangesButton().click();
-        cy.contains('Facility ownership updated successfully').should('be.visible'); //Adjust message as needed
+    //Check if facility ownership exists. If not, add it.
+    pageObject.actionsButton.should('be.visible').then(($el) => {
+        if ($el.length ===0){
+            pageObject.addFacilityOwnership(initialFacilityOwnership);
+            pageObject.verifyFacilityOwnershipChange(initialFacilityOwnership);
+        }
+    })
 
-      }
-    });
 
+    pageObject.editFacilityOwnership(updatedFacilityOwnership);
+    pageObject.verifyFacilityOwnershipChange(updatedFacilityOwnership);
   });
 });
 
