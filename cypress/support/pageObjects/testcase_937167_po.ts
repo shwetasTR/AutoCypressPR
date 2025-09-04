@@ -1,79 +1,78 @@
 ```typescript
 class TestCase937167 {
-  private facilityOwnershipSection: string;
-  private addFacilityOwnershipButton: string;
-  private facilityOwnershipDropdown: string;
-  private saveFacilityOwnershipButton: string;
-  private actionsButton: string;
-  private editFacilityOwnershipButton: string;
-  private saveChangesButton: string;
+  private selectors: { [key: string]: string }
 
   constructor() {
-    this.facilityOwnershipSection = '#contents-facilityOwnership';
-    this.addFacilityOwnershipButton = 'button[data-testid="add-facility-ownership"]';
-    this.facilityOwnershipDropdown = 'select[name="facilityOwnership"]';
-    this.saveFacilityOwnershipButton = 'button[type="submit"]';
-    this.actionsButton = 'button[data-testid="actions-button"]';
-    this.editFacilityOwnershipButton = 'button[data-testid="edit-facility-ownership"]';
-    this.saveChangesButton = 'button[type="submit"]';
+    this.selectors = {
+      facility_ownership_section: "#contents-facilityOwnership",
+      add_facility_ownership_button: "button[data-testid='add-facility-ownership']",
+      facility_ownership_dropdown: "select[name='facilityOwnership']",
+      save_facility_ownership_button: "button[type='submit']",
+      actions_button: "button[data-testid='actions-button']",
+      edit_facility_ownership_button: "button[data-testid='edit-facility-ownership']",
+      save_changes_button: "button[data-testid='save-changes']"
+    };
   }
 
 
-  getFacilityOwnershipSection() {
-    return cy.get(this.facilityOwnershipSection);
+  get facilityOwnershipSection() {
+    return cy.get(this.selectors.facility_ownership_section);
   }
 
-  getAddFacilityOwnershipButton() {
-    return cy.get(this.addFacilityOwnershipButton);
+  get addFacilityOwnershipButton() {
+    return cy.get(this.selectors.add_facility_ownership_button);
   }
 
-  getFacilityOwnershipDropdown() {
-    return cy.get(this.facilityOwnershipDropdown);
+  get facilityOwnershipDropdown() {
+    return cy.get(this.selectors.facility_ownership_dropdown);
   }
 
-  getSaveFacilityOwnershipButton() {
-    return cy.get(this.saveFacilityOwnershipButton);
+  get saveFacilityOwnershipButton() {
+    return cy.get(this.selectors.save_facility_ownership_button);
   }
 
-  getActionsButton() {
-    return cy.get(this.actionsButton);
+  get actionsButton() {
+    return cy.get(this.selectors.actions_button);
   }
 
-  getEditFacilityOwnershipButton() {
-    return cy.get(this.editFacilityOwnershipButton);
+  get editFacilityOwnershipButton() {
+    return cy.get(this.selectors.edit_facility_ownership_button);
   }
 
-  getSaveChangesButton() {
-    return cy.get(this.saveChangesButton);
+  get saveChangesButton() {
+    return cy.get(this.selectors.save_changes_button);
   }
-
-  addFacilityOwnership(facilityOwnershipValue: string) {
-    this.getAddFacilityOwnershipButton().click();
-    this.getFacilityOwnershipDropdown().select(facilityOwnershipValue);
-    this.getSaveFacilityOwnershipButton().click();
-  }
-
-  editFacilityOwnership(facilityOwnershipValue: string) {
-    this.getActionsButton().first().click(); // Assuming multiple actions buttons, selecting the first one.  Error handling should be added for robustness.
-    this.getEditFacilityOwnershipButton().click();
-    // Assuming a similar dropdown for editing.  Adjust selector if different.
-    this.getFacilityOwnershipDropdown().select(facilityOwnershipValue);
-    this.getSaveChangesButton().click();
-
-  }
-
 
   navigateToProductRecordPage(productId: string, hsNumber: string, productNumber: string) {
     const url = `https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/gtm/product-classification/product-record?productId=${productId}&hsNumber=${hsNumber}&productNumber=${productNumber}&countryCode=US`;
     cy.visit(url);
   }
 
-  verifyPageLoad() {
-    cy.url().should('include', '/product-classification/product-record'); // Adjust as needed for your specific URL structure.
+
+  addFacilityOwnership(facilityOwnershipValue: string) {
+    this.addFacilityOwnershipButton.click();
+    this.facilityOwnershipDropdown.select(facilityOwnershipValue);
+    this.saveFacilityOwnershipButton.click();
   }
 
-  scrollIntoView() {
-    this.getFacilityOwnershipSection().scrollIntoView();
+  editFacilityOwnership(facilityOwnershipValue: string) {
+    this.actionsButton.click();
+    this.editFacilityOwnershipButton.click();
+    // Assuming a way to interact with the edit popup to change the facility ownership
+    cy.get('input[name="facilityOwnership"]').clear().type(facilityOwnershipValue); // Placeholder - Replace with actual selector
+    this.saveChangesButton.click();
+  }
+
+  verifyFacilityOwnershipChange(expectedFacilityOwnership: string) {
+      // Add assertion to verify the facility ownership has changed and a success message is displayed.
+      // Replace with your actual assertion logic based on your application's UI.  Example:
+      cy.contains(expectedFacilityOwnership).should('be.visible');
+      cy.contains('Facility ownership updated successfully').should('be.visible'); //Example success message
+  }
+
+
+  scrollIntoView(){
+    this.facilityOwnershipSection.scrollIntoView();
   }
 }
 ```
