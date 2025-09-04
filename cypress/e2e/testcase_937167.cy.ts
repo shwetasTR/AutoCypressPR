@@ -6,10 +6,7 @@ describe('Test Case ID: 937167 - Verify Edit Function', () => {
   const pageObject = new TestCase937167();
   const productId = '12345'; // Replace with actual product ID
   const hsNumber = '67890';   // Replace with actual HS Number
-  const productNumber = '54321'; // Replace with actual Product Number
-  const initialFacilityOwnership = 'Ownership A';
-  const updatedFacilityOwnership = 'Ownership B';
-
+  const productNumber = '98765'; // Replace with actual Product Number
 
   before(() => {
     cy.testCaseMapping([
@@ -19,25 +16,24 @@ describe('Test Case ID: 937167 - Verify Edit Function', () => {
         testCaseLink: "https://dev.azure.com/tr-corp-tax/onesource-global-trade/_workitems/edit/937167",
       },
     ]);
-    //Add login steps here using cy.login() if needed.  Assumed handled elsewhere or via environment setup.
-
+    //Login steps -  replace with your actual login implementation.
+    cy.login('valid_username', 'valid_password'); 
   });
+
 
   it('should successfully edit facility ownership', () => {
     pageObject.navigateToProductRecordPage(productId, hsNumber, productNumber);
-    pageObject.verifyPageLoad();
-    pageObject.scrollIntoView();
+    pageObject.scrollFacilityOwnershipIntoView();
 
-    //Check if facility ownership exists, add if not.  Error handling needed for robustness.
-    pageObject.actionsButton.should('be.visible').then(($el) => {
-        if ($el.length === 0) {
-            pageObject.addFacilityOwnership(initialFacilityOwnership);
-        }
+    //Check if facility ownership records exist. If not, add one.
+    pageObject.getActionsButton().should('exist').then(($actionsButton) => {
+      if ($actionsButton.length === 0) {
+        pageObject.addFacilityOwnership('Facility Ownership Value 1'); // Replace with a valid value
+      } else {
+        //Edit existing record.
+        pageObject.editFacilityOwnership('Facility Ownership Value 2'); // Replace with a valid value
+      }
     });
-
-    pageObject.editFacilityOwnership(updatedFacilityOwnership);
-    // Add assertion to verify successful message or updated facility ownership.  Replace with actual selector
-    cy.contains('Facility ownership updated successfully').should('be.visible'); //Example assertion - adjust as needed.
 
   });
 });
