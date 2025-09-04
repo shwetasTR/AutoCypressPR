@@ -1,14 +1,17 @@
 ```typescript
 /// <reference types="cypress" />
-import TestCase937167 from "../support/pageObjects/testcase_937167_po";
+import { TestCase937167 } from "../support/pageObjects/testcase_937167_po";
 
 describe("Test Case ID: 937167 - Verify in edit function.", () => {
   const pageObject = new TestCase937167();
-  const username = Cypress.env('username'); //Get username from cypress.env
-  const password = Cypress.env('password'); //Get password from cypress.env
-  const productId = Cypress.env('productId'); //Get productId from cypress.env
-  const hsNumber = Cypress.env('hsNumber'); //Get hsNumber from cypress.env
-  const productNumber = Cypress.env('productNumber'); //Get productNumber from cypress.env
+  const username = "your_username"; // Replace with actual username
+  const password = "your_password"; // Replace with actual password
+  const productId = "your_product_id"; // Replace with actual product ID
+  const hsNumber = "your_hs_number"; // Replace with actual HS Number
+  const productNumber = "your_product_number"; // Replace with actual product number
+  const url = `/gtm/product-classification/product-record?productId=${productId}&hsNumber=${hsNumber}&productNumber=${productNumber}&countryCode=US`;
+  const ownershipType = "Sole Proprietorship"; //Replace with an actual value from your dropdown
+  const newOwnership = "Partnership"; //Replace with a different ownership type
 
   before(() => {
     cy.testCaseMapping([
@@ -20,22 +23,20 @@ describe("Test Case ID: 937167 - Verify in edit function.", () => {
     ]);
   });
 
-
   it("should successfully edit facility ownership", () => {
     pageObject.login(username, password);
-    pageObject.navigateToProductRecordPage(productId, hsNumber, productNumber);
-    pageObject.verifyPageLoad();
-    pageObject.navigateToFacilityOwnership();
+    pageObject.navigateToProductRecord(url);
+    pageObject.clickFacilityOwnership();
 
     //Check if facility ownership records exist. If not, add one.
-    cy.get(pageObject.getActionsButtonSelector()).then(($actions) => {
-      if ($actions.length === 0) {
-        pageObject.addFacilityOwnership("Test Facility Ownership");
+    pageObject.actionsButton.should('exist').then(($el) => {
+      if ($el.length === 0) {
+          pageObject.addFacilityOwnership(ownershipType);
       }
     });
 
-    pageObject.editFacilityOwnership("Updated Facility Ownership");
-    pageObject.verifySuccessMessage();
+
+    pageObject.editFacilityOwnership(newOwnership, true);
   });
 });
 
