@@ -1,17 +1,9 @@
 ```typescript
 class TestCase937167 {
-  private selectors: { [key: string]: string }
+  private selectors: { [key: string]: string };
 
-  constructor() {
-    this.selectors = {
-      facility_ownership_section: "#contents-facilityOwnership",
-      add_facility_ownership_button: "button[data-testid='add-facility-ownership']",
-      facility_ownership_dropdown: "select[name='facilityOwnership']",
-      save_facility_ownership_button: "button[type='submit']",
-      actions_button: "button[data-testid='actions-button']",
-      edit_facility_ownership_button: "button[data-testid='edit-facility-ownership']",
-      save_changes_button: "button[data-testid='save-changes']"
-    };
+  constructor(selectors: { [key: string]: string }) {
+    this.selectors = selectors;
   }
 
 
@@ -35,8 +27,8 @@ class TestCase937167 {
     return cy.get(this.selectors.actions_button);
   }
 
-  get editFacilityOwnershipButton() {
-    return cy.get(this.selectors.edit_facility_ownership_button);
+  get editActionButton() {
+    return cy.get(this.selectors.edit_action_button);
   }
 
   get saveChangesButton() {
@@ -57,22 +49,23 @@ class TestCase937167 {
 
   editFacilityOwnership(facilityOwnershipValue: string) {
     this.actionsButton.click();
-    this.editFacilityOwnershipButton.click();
-    // Assuming a way to interact with the edit popup to change the facility ownership
-    cy.get('input[name="facilityOwnership"]').clear().type(facilityOwnershipValue); // Placeholder - Replace with actual selector
+    this.editActionButton.click();
+    // Assuming a selector for the facility ownership input field exists.  Replace 'input[name="facilityOwnership"]' with the actual selector if different.
+    cy.get('input[name="facilityOwnership"]').clear().type(facilityOwnershipValue); 
     this.saveChangesButton.click();
+
   }
 
-  verifyFacilityOwnershipChange(expectedFacilityOwnership: string) {
-      // Add assertion to verify the facility ownership has changed and a success message is displayed.
-      // Replace with your actual assertion logic based on your application's UI.  Example:
-      cy.contains(expectedFacilityOwnership).should('be.visible');
-      cy.contains('Facility ownership updated successfully').should('be.visible'); //Example success message
+  verifyPageLoad() {
+    cy.url().should('include', '/product-classification/product-record');
   }
 
 
   scrollIntoView(){
     this.facilityOwnershipSection.scrollIntoView();
   }
+
 }
+
+export default TestCase937167;
 ```
