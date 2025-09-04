@@ -1,135 +1,90 @@
 ```typescript
 class TestCase937167 {
-  baseUrl = "https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com";
-  selectors = {
-    username: "[data-testid='username']",
-    password: "[data-testid='password']",
-    submitButton: "[type='submit']",
-    loginSuccessValidation: ".success-message",
-    pageLoadValidation: "body",
-    facilityOwnershipLink: "[data-testid='facility-ownership']",
-    facilityOwnershipValidation: "#facility-ownership-section",
-    addButton: "[data-testid='add-facility']",
-    dropdown: "select[name='ownershipType']",
-    saveButton: "[data-testid='save-facility']",
-    recordAddedValidation: ".success-message",
-    actionsButton: "[data-testid='actions-button']",
-    editButton: "[data-testid='edit-button']",
-    editPopupValidation: ".edit-popup",
-    ownershipField: "input[name='ownership']",
-    ftzActiveCheckbox: "input[type='checkbox'][name='ftzActive']",
-    saveChangesButton: "[data-testid='save-changes']",
-    successMessageValidation: ".success-message",
-  };
-
-  constructor() {}
+  baseUrl = "https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/";
+  usernameSelector = "[data-testid='username']";
+  passwordSelector = "[data-testid='password']";
+  submitSelector = "[type='submit']";
+  loginSuccessValidationSelector = "[data-testid='user-profile']";
+  productRecordUrl = "/gtm/product-classification/product-record?productId=b127f5e6-09f1-4142-a6b7-8523d69b789e&productNumber=TST_dbS4B-tF4TV&hsNumber=&countryCode=US&activeWorkQueue=All%20products&previousPageUrl=WorkQueues";
+  pageLoadValidationSelector = "body";
+  facilityOwnershipSelector = "#facilityOwnershipSection";
+  facilityOwnershipSectionValidationSelector = "#facilityOwnershipSection.active";
+  addButtonSelector = "button[data-testid='add-facility']";
+  dropdownSelector = "select[name='facilityOwnership']";
+  savebuttonSelector = "button[type='submit']";
+  recordAddedValidationSelector = ".facility-ownership-row:last-child";
+  actionsButtonSelector = ".facility-ownership-row:first-child button[data-testid='actions']";
+  editButtonSelector = "[data-testid='edit-facility']";
+  editPopupValidationSelector = "#edit-facility-popup";
+  facilityOwnershipFieldSelector = "select[name='facilityOwnership']";
+  ftzActiveCheckboxSelector = "#ftzActiveCheckbox";
+  saveChangesButtonSelector = "button[data-testid='save-changes']";
+  successMessageValidationSelector = ".success-message";
+  updatedFacilityOwnershipValidationSelector = ".facility-ownership-row:first-child .facility-ownership-value";
 
 
-  get usernameField() {
-    return cy.get(this.selectors.username);
-  }
-
-  get passwordField() {
-    return cy.get(this.selectors.password);
-  }
-
-  get submitButton() {
-    return cy.get(this.selectors.submitButton);
-  }
-
-  get loginSuccessMessage() {
-    return cy.get(this.selectors.loginSuccessValidation);
-  }
-
-  get pageBody() {
-    return cy.get(this.selectors.pageLoadValidation);
-  }
-
-  get facilityOwnershipLink() {
-    return cy.get(this.selectors.facilityOwnershipLink);
-  }
-
-  get facilityOwnershipSection() {
-    return cy.get(this.selectors.facilityOwnershipValidation);
-  }
-
-  get addFacilityButton() {
-    return cy.get(this.selectors.addButton);
-  }
-
-  get ownershipDropdown() {
-    return cy.get(this.selectors.dropdown);
-  }
-
-  get saveFacilityButton() {
-    return cy.get(this.selectors.saveButton);
-  }
-
-  get recordAddedMessage() {
-    return cy.get(this.selectors.recordAddedValidation);
-  }
-
-  get actionsButton() {
-    return cy.get(this.selectors.actionsButton);
-  }
-
-  get editButton() {
-    return cy.get(this.selectors.editButton);
-  }
-
-  get editPopup() {
-    return cy.get(this.selectors.editPopupValidation);
-  }
-
-  get ownershipField() {
-    return cy.get(this.selectors.ownershipField);
-  }
-
-  get ftzActiveCheckbox() {
-    return cy.get(this.selectors.ftzActiveCheckbox);
-  }
-
-  get saveChangesButton() {
-    return cy.get(this.selectors.saveChangesButton);
-  }
-
-  get successMessage() {
-    return cy.get(this.selectors.successMessageValidation);
-  }
+  getUsernameSelector() { return this.usernameSelector; }
+  getPasswordSelector() { return this.passwordSelector; }
+  getSubmitSelector() { return this.submitSelector; }
+  getLoginSuccessValidationSelector() { return this.loginSuccessValidationSelector; }
+  getPageLoadValidationSelector() { return this.pageLoadValidationSelector; }
+  getFacilityOwnershipSelector() { return this.facilityOwnershipSelector; }
+  getFacilityOwnershipSectionValidationSelector() { return this.facilityOwnershipSectionValidationSelector; }
+  getAddButtonSelector() { return this.addButtonSelector; }
+  getDropdownSelector() { return this.dropdownSelector; }
+  getSavebuttonSelector() { return this.savebuttonSelector; }
+  getRecordAddedValidationSelector() { return this.recordAddedValidationSelector; }
+  getActionsButtonSelector() { return this.actionsButtonSelector; }
+  getEditButtonSelector() { return this.editButtonSelector; }
+  getEditPopupValidationSelector() { return this.editPopupValidationSelector; }
+  getFacilityOwnershipFieldSelector() { return this.facilityOwnershipFieldSelector; }
+  getFtzActiveCheckboxSelector() { return this.ftzActiveCheckboxSelector; }
+  getSaveChangesButtonSelector() { return this.saveChangesButtonSelector; }
+  getSuccessMessageValidationSelector() { return this.successMessageValidationSelector; }
+  getUpdatedFacilityOwnershipValidationSelector() { return this.updatedFacilityOwnershipValidationSelector; }
 
 
   login(username: string, password: string) {
-    this.usernameField.type(username);
-    this.passwordField.type(password);
-    this.submitButton.click();
-    this.loginSuccessMessage.should('be.visible');
+    cy.visit(this.baseUrl);
+    cy.get(this.getUsernameSelector()).type(username);
+    cy.get(this.getPasswordSelector()).type(password);
+    cy.get(this.getSubmitSelector()).click();
+    cy.get(this.getLoginSuccessValidationSelector()).should('be.visible');
   }
 
-  navigateToProductRecord(url: string) {
-    cy.visit(`${this.baseUrl}${url}`);
-    this.pageBody.should('be.visible');
+  navigateToProductRecordPage() {
+    cy.visit(this.baseUrl + this.productRecordUrl);
+    cy.get(this.getPageLoadValidationSelector()).should('be.visible');
   }
 
-  clickFacilityOwnership() {
-    this.facilityOwnershipLink.click();
-    this.facilityOwnershipSection.should('be.visible');
+  navigateToFacilityOwnership() {
+    cy.get(this.getFacilityOwnershipSelector()).click();
+    cy.get(this.getFacilityOwnershipSectionValidationSelector()).should('be.visible');
   }
 
-  addFacilityOwnership(ownershipType: string) {
-    this.addFacilityButton.click();
-    this.ownershipDropdown.select(ownershipType);
-    this.saveFacilityButton.click();
-    this.recordAddedMessage.should('be.visible');
+  addFacilityOwnershipRecord(facilityOwnership: string) {
+    cy.get(this.getAddButtonSelector()).click();
+    cy.get(this.getDropdownSelector()).select(facilityOwnership);
+    cy.get(this.getSavebuttonSelector()).click();
+    cy.get(this.getRecordAddedValidationSelector()).should('be.visible');
   }
 
-  editFacilityOwnership(newOwnership: string, ftzActive: boolean) {
-    this.actionsButton.click();
-    this.editButton.click();
-    this.editPopup.should('be.visible');
-    this.ownershipField.clear().type(newOwnership);
-    this.ftzActiveCheckbox.check({ force: true }); //Force is used because the checkbox might be hidden initially.  Handle appropriately for your application.
-    this.saveChangesButton.click();
-    this.successMessage.should('be.visible');
+  editFacilityOwnershipRecord() {
+    cy.get(this.getActionsButtonSelector()).click();
+    cy.get(this.getEditButtonSelector()).click();
+    cy.get(this.getEditPopupValidationSelector()).should('be.visible');
+  }
+
+  updateFacilityOwnershipRecord(facilityOwnership: string, ftzActive: boolean) {
+    cy.get(this.getFacilityOwnershipFieldSelector()).select(facilityOwnership);
+    if (ftzActive) {
+      cy.get(this.getFtzActiveCheckboxSelector()).check();
+    } else {
+      cy.get(this.getFtzActiveCheckboxSelector()).uncheck();
+    }
+    cy.get(this.getSaveChangesButtonSelector()).click();
+    cy.get(this.getSuccessMessageValidationSelector()).should('be.visible');
+    cy.get(this.getUpdatedFacilityOwnershipValidationSelector()).should('contain', facilityOwnership);
   }
 }
 ```
