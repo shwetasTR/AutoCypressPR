@@ -1,90 +1,64 @@
 ```typescript
 class TestCase937167 {
-  baseUrl = "https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/";
-  usernameSelector = "[data-testid='username']";
-  passwordSelector = "[data-testid='password']";
-  submitSelector = "[type='submit']";
-  loginSuccessValidationSelector = "[data-testid='user-profile']";
-  productRecordUrl = "/gtm/product-classification/product-record?productId=b127f5e6-09f1-4142-a6b7-8523d69b789e&productNumber=TST_dbS4B-tF4TV&hsNumber=&countryCode=US&activeWorkQueue=All%20products&previousPageUrl=WorkQueues";
-  pageLoadValidationSelector = "body";
-  facilityOwnershipSelector = "#facilityOwnershipSection";
-  facilityOwnershipSectionValidationSelector = "#facilityOwnershipSection.active";
-  addButtonSelector = "button[data-testid='add-facility']";
-  dropdownSelector = "select[name='facilityOwnership']";
-  savebuttonSelector = "button[type='submit']";
-  recordAddedValidationSelector = ".facility-ownership-row:last-child";
-  actionsButtonSelector = ".facility-ownership-row:first-child button[data-testid='actions']";
-  editButtonSelector = "[data-testid='edit-facility']";
-  editPopupValidationSelector = "#edit-facility-popup";
-  facilityOwnershipFieldSelector = "select[name='facilityOwnership']";
-  ftzActiveCheckboxSelector = "#ftzActiveCheckbox";
-  saveChangesButtonSelector = "button[data-testid='save-changes']";
-  successMessageValidationSelector = ".success-message";
-  updatedFacilityOwnershipValidationSelector = ".facility-ownership-row:first-child .facility-ownership-value";
+  //Selectors -  These are placeholders and MUST be replaced with actual, robust selectors.  The provided JSON is insufficient.  Selectors should be created using best practices, such as data attributes or unique identifiers, to avoid fragility.
+
+  //Login Page Selectors (Placeholders - Replace with actual selectors)
+  loginPageUsernameInput = '#username'; // Example - Replace with actual selector
+  loginPagePasswordInput = '#password'; // Example - Replace with actual selector
+  loginPageSubmitButton = 'button[type="submit"]'; // Example - Replace with actual selector
+  loginSuccessIndicator = '.login-success'; // Example - Replace with actual selector
 
 
-  getUsernameSelector() { return this.usernameSelector; }
-  getPasswordSelector() { return this.passwordSelector; }
-  getSubmitSelector() { return this.submitSelector; }
-  getLoginSuccessValidationSelector() { return this.loginSuccessValidationSelector; }
-  getPageLoadValidationSelector() { return this.pageLoadValidationSelector; }
-  getFacilityOwnershipSelector() { return this.facilityOwnershipSelector; }
-  getFacilityOwnershipSectionValidationSelector() { return this.facilityOwnershipSectionValidationSelector; }
-  getAddButtonSelector() { return this.addButtonSelector; }
-  getDropdownSelector() { return this.dropdownSelector; }
-  getSavebuttonSelector() { return this.savebuttonSelector; }
-  getRecordAddedValidationSelector() { return this.recordAddedValidationSelector; }
-  getActionsButtonSelector() { return this.actionsButtonSelector; }
-  getEditButtonSelector() { return this.editButtonSelector; }
-  getEditPopupValidationSelector() { return this.editPopupValidationSelector; }
-  getFacilityOwnershipFieldSelector() { return this.facilityOwnershipFieldSelector; }
-  getFtzActiveCheckboxSelector() { return this.ftzActiveCheckboxSelector; }
-  getSaveChangesButtonSelector() { return this.saveChangesButtonSelector; }
-  getSuccessMessageValidationSelector() { return this.successMessageValidationSelector; }
-  getUpdatedFacilityOwnershipValidationSelector() { return this.updatedFacilityOwnershipValidationSelector; }
+  //Product Record Page Selectors (Placeholders - Replace with actual selectors)
+  facilityOwnershipSection = '#facility-ownership-section'; // Example - Replace with actual selector
+  addFacilityOwnershipButton = 'button[data-testid="add-facility"]'; // Example - Replace with actual selector
+  facilityOwnershipDropdown = '#facility-ownership-dropdown'; // Example - Replace with actual selector
+  saveFacilityOwnershipButton = 'button[data-testid="save-facility"]'; // Example - Replace with actual selector
+  actionsButton = '[data-testid="actions-button"]'; // Example - Replace with actual selector
+  editButton = '[data-testid="edit-button"]'; // Example - Replace with actual selector
+  editPopup = '.edit-popup'; // Example - Replace with actual selector
+  saveChangesButton = 'button[data-testid="save-changes"]'; // Example - Replace with actual selector
+  successMessage = '.success-message'; // Example - Replace with actual selector
 
 
+  // Actions
   login(username: string, password: string) {
-    cy.visit(this.baseUrl);
-    cy.get(this.getUsernameSelector()).type(username);
-    cy.get(this.getPasswordSelector()).type(password);
-    cy.get(this.getSubmitSelector()).click();
-    cy.get(this.getLoginSuccessValidationSelector()).should('be.visible');
+    cy.visit('https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/'); //Update with correct URL if needed.
+    cy.get(this.loginPageUsernameInput).type(username);
+    cy.get(this.loginPagePasswordInput).type(password);
+    cy.get(this.loginPageSubmitButton).click();
+    cy.get(this.loginSuccessIndicator).should('be.visible'); //Replace with appropriate assertion
   }
 
-  navigateToProductRecordPage() {
-    cy.visit(this.baseUrl + this.productRecordUrl);
-    cy.get(this.getPageLoadValidationSelector()).should('be.visible');
+  navigateToProductRecord(productId: string, hsNumber: string, productNumber: string) {
+    const url = `https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/gtm/product-classification/product-record?productId=${productId}&hsNumber=${hsNumber}&productNumber=${productNumber}&countryCode=US`;
+    cy.visit(url);
+    // Add assertions to check if the page loaded correctly.  For example, check for the presence of specific elements on the page.
+    cy.title().should('include', 'Product Record'); // Example - Replace with appropriate assertion
   }
 
-  navigateToFacilityOwnership() {
-    cy.get(this.getFacilityOwnershipSelector()).click();
-    cy.get(this.getFacilityOwnershipSectionValidationSelector()).should('be.visible');
+  navigateToFacilityOwnershipSection() {
+    cy.get(this.facilityOwnershipSection).scrollIntoView().should('be.visible');
   }
 
-  addFacilityOwnershipRecord(facilityOwnership: string) {
-    cy.get(this.getAddButtonSelector()).click();
-    cy.get(this.getDropdownSelector()).select(facilityOwnership);
-    cy.get(this.getSavebuttonSelector()).click();
-    cy.get(this.getRecordAddedValidationSelector()).should('be.visible');
+  addFacilityOwnership(facilityOwnershipValue: string) {
+    cy.get(this.addFacilityOwnershipButton).click();
+    cy.get(this.facilityOwnershipDropdown).select(facilityOwnershipValue);
+    cy.get(this.saveFacilityOwnershipButton).click();
+    cy.get(this.successMessage).should('be.visible').contains('Facility ownership added successfully'); //Replace with appropriate assertion and message
   }
 
-  editFacilityOwnershipRecord() {
-    cy.get(this.getActionsButtonSelector()).click();
-    cy.get(this.getEditButtonSelector()).click();
-    cy.get(this.getEditPopupValidationSelector()).should('be.visible');
-  }
 
-  updateFacilityOwnershipRecord(facilityOwnership: string, ftzActive: boolean) {
-    cy.get(this.getFacilityOwnershipFieldSelector()).select(facilityOwnership);
-    if (ftzActive) {
-      cy.get(this.getFtzActiveCheckboxSelector()).check();
-    } else {
-      cy.get(this.getFtzActiveCheckboxSelector()).uncheck();
-    }
-    cy.get(this.getSaveChangesButtonSelector()).click();
-    cy.get(this.getSuccessMessageValidationSelector()).should('be.visible');
-    cy.get(this.getUpdatedFacilityOwnershipValidationSelector()).should('contain', facilityOwnership);
+  editFacilityOwnership(newFacilityOwnershipValue: string) {
+    cy.get(this.actionsButton).first().click(); // Assumes at least one facility ownership exists.  Handle no records case.
+    cy.get(this.editButton).click();
+    cy.get(this.editPopup).should('be.visible'); //Replace with appropriate assertion
+    // Add logic to change the facility ownership value in the edit popup.  This requires selectors for the input field within the popup.
+    cy.get('#facilityOwnershipInput').clear().type(newFacilityOwnershipValue); // Example - Replace with actual selector
+    cy.get(this.saveChangesButton).click();
+    cy.get(this.successMessage).should('be.visible').contains('Facility ownership updated successfully'); //Replace with appropriate assertion and message
   }
 }
+
+export default TestCase937167;
 ```
