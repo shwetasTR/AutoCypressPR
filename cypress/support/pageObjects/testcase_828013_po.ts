@@ -1,99 +1,108 @@
 ```typescript
+/// <reference types="cypress" />
+
 class TestCase828013 {
-  private selectors = {
-    login: {
-      details: "div:nth-child(1) > p > b", // Needs improvement:  Target specific login form elements (username, password, etc.)
-      successMessage: "div:nth-child(2) > p", // Needs improvement: Target a specific success element on the page.
-    },
-    dpsQuickScreening: {
-      link: "a[href='/gtm/dps/search']", // Needs improvement: More specific selector needed if this is not a direct link.
-      pageLoadSuccess: "div:nth-child(4) > p", // Needs improvement:  Target a specific element on the DPS Quick Screening page.
-      searchInput: "input[type='text']", // Needs improvement:  More specific selector for the search input field.
-      searchResults: "div:nth-child(6) > p", // Needs improvement:  Target a specific element to count search results (e.g., a results count element).
+  // Login Page Selectors (REPLACE THESE WITH ACTUAL SELECTORS)
+  private loginUsername = '#username'; // Example: Replace with actual username field selector
+  private loginPassword = '#password'; // Example: Replace with actual password field selector
+  private loginSubmit = '#loginSubmit'; // Example: Replace with actual login button selector
 
-    },
-    confirmDenial: {
-      actionsButton: "button:contains('Actions')", // Needs improvement: Add more specificity to ensure the correct button is selected.
-      radWindow: "div:nth-child(8) > div > p", // Needs improvement: Target the RadWindow element directly. Use a more robust selector (e.g., ID, class).
-      submitButton: "button:contains('Submit')", // Needs improvement: Add more specificity (e.g., within the RadWindow).
-      errorMessage: "div:nth-child(10) > p", // Needs improvement: Target the specific error message element.
-      closeButton: "button:contains('Close')", // Needs improvement: Add more specificity (e.g., within the RadWindow).
-      selectReasonDropdown: "select[name='SelectReason']", // Needs improvement: Verify selector accuracy; use a more robust selector if possible.
-      addCustomNoteTextbox: "textarea[name='AddCustomNote']", // Needs improvement: Verify selector accuracy; use a more robust selector if possible.
-      successMessageAfterSubmission: "div:nth-child(18) > p", // Needs improvement:  Target specific success message and company status elements separately.
 
-    },
-    reportGeneration: {
-      actionsButton: "button:contains('Actions')", // Needs improvement: Add more specificity to ensure the correct button is selected.
-      createReportOption: "div:nth-child(20) > p", // Needs improvement: Target the "Create Report" option directly.
-      dpsManagementLink: "a[href='/gtm/aspx?href=%2FDTS%2FfxdDTSHistory.aspx']", // Needs improvement: More specific selector needed.
-      dpsManagementPageLoadSuccess: "div:nth-child(22) > p", // Needs improvement: Target a specific element on the DPS Management page.
-      usernameDropdown: "select[name='Username']", // Needs improvement: Verify selector accuracy; use a more robust selector if possible.
-      beginDateInput: "input[type='date']", // Needs improvement:  Separate selectors for begin and end date inputs.
-      endDateInput: "input[type='date']", // Needs improvement:  Separate selectors for begin and end date inputs.
-      searchButton: "a:contains('Search')", // Needs improvement: Add more specificity to ensure the correct button is selected.
-      deniedReviewStatus: "div:nth-child(28) > p" // Needs improvement: Target the review status element directly.
-    }
-  };
+  // DPS Quick Screening Selectors (REPLACE THESE WITH ACTUAL SELECTORS)
+  private dpsQuickScreeningLink = 'a[href="/gtm/dps/search"]';
+  private searchField = '#searchField'; // Example: Replace with actual search input field selector
+  private searchButton = '#searchButton'; // Example: Replace with actual search button selector
+  private actionsButton = '#actionsButton'; // Example: Replace with actual 'Actions' button selector
+  private confirmDenialMenuItem = '#confirmDenialMenuItem'; // Example: Replace with actual 'Confirm Denial' menu item selector
+
+  // Confirm Denial RadWindow Selectors (REPLACE THESE WITH ACTUAL SELECTORS)
+  private selectReasonDropdown = '#selectReason'; // Example: Replace with actual 'Select Reason' dropdown selector
+  private addCustomNoteTextbox = '#addCustomNote'; // Example: Replace with actual 'Add Custom Note' textbox selector
+  private uploadButton = '#uploadButton'; // Example: Replace with actual document upload button selector
+  private closeButton = '#closeButton'; // Example: Replace with actual 'Close' button selector
+  private submitButton = '#submitButton'; // Example: Replace with actual 'Submit' button selector
+
+  //Validation Selectors
+  private confirmDenialRadWindow = '#confirmDenialRadWindow'; // Example: Replace with selector to identify the RadWindow
+  private reasonOrNoteRequiredMessage = '.reason-or-note-required'; // Example: Replace with selector for error message
+  private companyStatusDenied = '#companyStatusDenied'; //Example: Replace with selector indicating denied status
+  private successMessage = '.success-message'; //Example: Replace with selector for success message
+  private createReportOption = '#createReportOption'; // Example: Replace with selector for 'Create Report' option
+
+  // DPS Management Selectors (REPLACE THESE WITH ACTUAL SELECTORS)
+  private dpsManagementLink = 'a[href="/gtm/aspx?href=%2FDTS%2FfxdDTSHistory.aspx"]';
+  private usernameDropdown = '#usernameDropdown'; // Example: Replace with actual Username dropdown selector
+  private beginDate = '#beginDate'; // Example: Replace with actual Begin Date field selector
+  private endDate = '#endDate'; // Example: Replace with actual End Date field selector
+  private dpsManagementSearchButton = '#dpsManagementSearchButton'; // Example: Replace with actual 'Search' button selector
+  private reviewStatusDenied = '.review-status-denied'; // Example: Selector to check for 'Denied' status
 
 
   login() {
-    // Needs improvement: Replace with actual login logic using robust selectors.
-    cy.get(this.selectors.login.details).should('be.visible'); // Placeholder
-    // ... actual login steps ...
-    cy.get(this.selectors.login.successMessage).should('contain', 'Successful Login'); // Placeholder success message
+    cy.visit('/login'); // Replace with your login page URL.  Assumes direct navigation to login page.  Adjust as needed.
+    cy.get(this.loginUsername).type('DPSUser'); // Replace 'DPSUser' with actual username
+    cy.get(this.loginPassword).type('Password123'); // Replace 'Password123' with actual password
+    cy.get(this.loginSubmit).click();
+    // Add validation here to ensure successful login.  e.g., checking for a user profile element.
+    cy.contains('Welcome, DPSUser').should('be.visible'); //Example validation.  Replace with appropriate validation.
+
   }
 
   navigateToDPSQuickScreening() {
-    cy.get(this.selectors.dpsQuickScreening.link).click();
-    cy.get(this.selectors.dpsQuickScreening.pageLoadSuccess).should('be.visible'); // Placeholder
+    cy.get(this.dpsQuickScreeningLink).click();
+    // Add validation to check if the DPS Quick Screening page is loaded.
+    cy.title().should('include', 'DPS Quick Screening'); //Example validation. Replace with appropriate validation.
   }
 
-  performSearch(searchQuery: string) {
-    cy.get(this.selectors.dpsQuickScreening.searchInput).type(searchQuery);
-    cy.get(this.selectors.dpsQuickScreening.searchInput).type('{enter}');
-    // Needs improvement: Add assertion to check for at least one search result.
-    cy.get(this.selectors.dpsQuickScreening.searchResults).should('be.visible'); // Placeholder
+  performSearch(searchTerm: string) {
+    cy.get(this.searchField).type(searchTerm);
+    cy.get(this.searchButton).click();
+    // Add validation to check if search results are displayed.  e.g., check for the presence of results.
+    cy.get('.search-result').should('have.length.greaterThan', 0); //Example validation. Replace with appropriate validation.
   }
 
-  confirmDenial(reason: string, note: string) {
-    cy.get(this.selectors.confirmDenial.actionsButton).click();
-    cy.get(this.selectors.confirmDenial.radWindow).should('be.visible'); // Placeholder
+  confirmDenial(reason?: string, note?: string) {
+    cy.get(this.actionsButton).click();
+    cy.get(this.confirmDenialMenuItem).click();
+    cy.get(this.confirmDenialRadWindow).should('be.visible'); //Verify RadWindow is open
+
+    cy.get(this.selectReasonDropdown).should('be.visible');
+    cy.get(this.addCustomNoteTextbox).should('be.visible');
+    cy.get(this.uploadButton).should('be.visible');
+    cy.get(this.closeButton).should('be.visible');
+    cy.get(this.submitButton).should('be.visible');
 
     if (reason) {
-      cy.get(this.selectors.confirmDenial.selectReasonDropdown).select(reason);
+      cy.get(this.selectReasonDropdown).select(reason);
+    }
+    if (note) {
+      cy.get(this.addCustomNoteTextbox).type(note);
     }
 
-    if (note.length <= 800) {
-      cy.get(this.selectors.confirmDenial.addCustomNoteTextbox).type(note);
-    } else {
-      throw new Error("Note exceeds 800 character limit.");
-    }
-
-    cy.get(this.selectors.confirmDenial.submitButton).click();
-
-    // Needs improvement: Add assertions to verify success message and company status.
-    cy.get(this.selectors.confirmDenial.successMessageAfterSubmission).should('be.visible'); // Placeholder
+    cy.get(this.submitButton).click();
   }
 
-  generateReport() {
-    cy.get(this.selectors.reportGeneration.actionsButton).click();
-    cy.get(this.selectors.reportGeneration.createReportOption).should('be.visible'); // Placeholder
 
+  verifyDenialSuccess() {
+    cy.get(this.companyStatusDenied).should('be.visible');
+    cy.get(this.successMessage).should('be.visible');
   }
 
   navigateToDPSManagement() {
-    cy.get(this.selectors.reportGeneration.dpsManagementLink).click();
-    cy.get(this.selectors.reportGeneration.dpsManagementPageLoadSuccess).should('be.visible'); // Placeholder
+    cy.get(this.dpsManagementLink).click();
+    // Add validation to check if the DPS Management page is loaded.
+    cy.title().should('include', 'DPS Management'); //Example validation. Replace with appropriate validation.
   }
 
-  reviewDPSManagement(username: string) {
-    cy.get(this.selectors.reportGeneration.usernameDropdown).select(username);
-    cy.get(this.selectors.reportGeneration.beginDateInput).type(new Date().toISOString().slice(0, 10));
-    cy.get(this.selectors.reportGeneration.endDateInput).type(new Date().toISOString().slice(0, 10));
-    cy.get(this.selectors.reportGeneration.searchButton).click();
-    cy.get(this.selectors.reportGeneration.deniedReviewStatus).should('contain', 'Denied'); // Placeholder
+  searchDPSManagement(username: string) {
+    cy.get(this.usernameDropdown).select(username); //This assumes a simple select.  Adjust as needed for more complex dropdown.
+    cy.get(this.beginDate).type('today'); // Cypress handles 'today' automatically.
+    cy.get(this.endDate).type('today');
+    cy.get(this.dpsManagementSearchButton).click();
+    cy.get(this.reviewStatusDenied).should('be.visible'); //Example validation.  Replace with appropriate validation.
   }
+
+  //Add any additional helper methods as needed
 }
 
 export default TestCase828013;
