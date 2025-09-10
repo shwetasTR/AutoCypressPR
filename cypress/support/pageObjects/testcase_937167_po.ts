@@ -1,91 +1,112 @@
 ```typescript
-/// <reference types="cypress" />
-
 class TestCase937167 {
-  private baseUrl: string;
-  private selectors: any;
+  baseUrl = "https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com/";
 
-  constructor(baseUrl: string, selectors: any) {
-    this.baseUrl = baseUrl;
-    this.selectors = selectors;
+  constructor() {}
+
+
+  get username() {
+    return cy.get('#username');
+  }
+
+  get password() {
+    return cy.get('#password');
+  }
+
+  get submitButton() {
+    return cy.get('button[type="submit"]');
+  }
+
+  get successMessage() {
+    return cy.get('.success-message');
+  }
+
+  get facilityOwnership() {
+    return cy.get('#facilityOwnership');
   }
 
 
-  // Getter methods for selectors
-  get loginUrl(): string {
-    return `${this.baseUrl}/gtm/product-classification/product-record?productId=b127f5e6-09f1-4142-a6b7-8523d69b789e&productNumber=TST_dbS4B-tF4TV&hsNumber=&countryCode=US&activeWorkQueue=All%20products&previousPageUrl=WorkQueues`;
+  get addButton() {
+    return cy.contains('button', 'Add');
   }
 
-  get facilityOwnershipSection(): string {
-    return this.selectors.testSteps[1].target;
+  get dropdown() {
+    return cy.get('select');
   }
 
-  get addFacilityButton(): string {
-    return this.selectors.testSteps[3].target;
+  get saveButton() {
+    return cy.contains('button', 'Save');
   }
 
-  get facilityOwnershipDropdown(): string {
-    return this.selectors.testSteps[3].subSteps[0].target;
+  get actionsButton() {
+    return cy.get('.actions-button');
   }
 
-  get saveFacilityButton(): string {
-    return this.selectors.testSteps[3].subSteps[1].target;
+  get editButton() {
+    return cy.contains('button', 'Edit');
   }
 
-  get facilityActionsEditButton(): string {
-    return this.selectors.testSteps[4].target;
+  get facilityOwnershipField() {
+    return cy.get('#facilityOwnershipField');
   }
 
-  get editFacilityModal(): string {
-    return this.selectors.testSteps[4].assertions[0].selector;
+  get saveChangesButton() {
+    return cy.contains('button', 'Save Changes');
   }
 
-  get facilityOwnershipInput(): string {
-    return this.selectors.testSteps[5].target;
-  }
-
-  get saveChangesButton(): string {
-    return this.selectors.testSteps[6].target;
-  }
-
-  get successMessageSelector(): string {
-    return this.selectors.testSteps[3].subSteps[1].assertions[0].selector || this.selectors.testSteps[6].assertions[0].selector;
+  get pageTitle() {
+    return cy.title();
   }
 
 
-  // Action methods
-  login(): void {
-    cy.visit(this.loginUrl);
-    cy.contains('Product Record').should('be.visible'); // Adjust assertion as needed
+  login(username: string, password: string) {
+    this.username.type(username);
+    this.password.type(password);
+    this.submitButton.click();
+    this.successMessage.should('be.visible');
   }
 
-  navigateToFacilityOwnership(): void {
-    cy.get(this.facilityOwnershipSection).click();
-    cy.get(this.facilityOwnershipSection).should('be.visible'); // Adjust assertion as needed
-
+  navigateToProductRecordPage(url: string) {
+    cy.visit(url);
+    this.pageTitle.should('contain', 'Product Record');
   }
 
-  scrollToFacilityOwnership(): void {
-    cy.scrollTo(this.facilityOwnershipSection);
-    cy.get(this.facilityOwnershipSection).should('be.visible');
+  clickFacilityOwnership() {
+    this.facilityOwnership.click();
+    //Custom command needed for scroll validation.  Example below.
+    cy.scrollToFacilityOwnership(); //Requires custom command implementation
   }
 
-  addFacilityOwnership(dropdownValue: string): void {
-    cy.get(this.addFacilityButton).click();
-    cy.get(this.facilityOwnershipDropdown).select(dropdownValue);
-    cy.get(this.saveFacilityButton).click();
-    cy.get(this.successMessageSelector).should('contain', 'Record added successfully'); // Adjust message as needed
+  addRecord(dropdownValue: string) {
+    this.addButton.click();
+    this.dropdown.select(dropdownValue);
+    this.saveButton.click();
+    this.successMessage.should('be.visible');
   }
 
-  editFacilityOwnership(newValue: string): void {
-    cy.get(this.facilityActionsEditButton).click();
-    cy.get(this.editFacilityModal).should('be.visible'); // Adjust selector as needed
-    cy.get(this.facilityOwnershipInput).clear().type(newValue);
-    cy.get(this.saveChangesButton).click();
-    cy.get(this.successMessageSelector).should('contain', 'Changes saved successfully'); // Adjust message as needed
-
+  editRecord(newFacilityOwnership: string) {
+    this.actionsButton.click();
+    this.editButton.click();
+    this.facilityOwnershipField.clear().type(newFacilityOwnership);
+    this.saveChangesButton.click();
+    this.successMessage.should('be.visible');
   }
 }
+
+//Example custom command for scroll validation (add to your cypress/support/commands.js)
+Cypress.Commands.add('scrollToFacilityOwnership', () => {
+  cy.get('#facilityOwnership').then(($el) => {
+    const elementTop = $el[0].offsetTop;
+    const windowHeight = Cypress.$(window).height();
+    const scrollPosition = elementTop - windowHeight /2 ; // Adjust as needed
+
+    cy.scrollTo(0, scrollPosition, {ensureScrollable: false}); // ensureScrollable: false to prevent errors if element is not scrollable.
+
+    // Add assertions to validate scroll position if needed.  Example:
+    // cy.wrap($el).should('be.withinViewport');
+
+  });
+});
 
 export default TestCase937167;
 ```
