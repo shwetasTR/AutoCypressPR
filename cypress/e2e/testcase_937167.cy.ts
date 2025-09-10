@@ -3,67 +3,17 @@
 import TestCase937167 from '../support/pageObjects/testcase_937167_po';
 
 describe('Test Case ID: 937167 - Verify in edit function', () => {
-  const baseUrl = 'https://ogt-gtm-web-qa.8443.aws-int.thomsonreuters.com';
-  const selectors = {
-    testSteps: [
-      {
-        stepNumber: 1,
-        target: '#facilityOwnership', // Example selector, replace with actual selector
-        assertions: []
-      },
-      {
-        stepNumber: 2,
-        target: '#addFacilityButton', // Example selector, replace with actual selector
-        subSteps: [
-          {
-            stepNumber: 2_1,
-            target: '#facilityOwnershipDropdown', // Example selector, replace with actual selector
-            assertions: []
-          },
-          {
-            stepNumber: 2_2,
-            target: '#saveFacilityButton', // Example selector, replace with actual selector
-            assertions: [
-              {
-                selector: '.success-message', // Example selector, replace with actual selector
-                expectedValue: 'Record added successfully'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        stepNumber: 3,
-        target: '#facilityActionsEditButton', // Example selector, replace with actual selector
-        assertions: [
-          {
-            selector: '#editFacilityModal', // Example selector, replace with actual selector
-            expectedValue: 'Edit Facility'
-          }
-        ]
-      },
-      {
-        stepNumber: 4,
-        target: '#facilityOwnershipInput', // Example selector, replace with actual selector
-        assertions: []
-      },
-      {
-        stepNumber: 5,
-        target: '#saveChangesButton', // Example selector, replace with actual selector
-        assertions: [
-          {
-            selector: '.success-message', // Example selector, replace with actual selector
-            expectedValue: 'Changes saved successfully'
-          }
-        ]
-      }
-    ]
-  };
-
-  const pageObject = new TestCase937167(baseUrl, selectors);
+  const pageObject = new TestCase937167();
+  const username = 'valid_username'; // Replace with actual valid username
+  const password = 'valid_password'; // Replace with actual valid password
+  const productId = '12345'; // Replace with actual product ID
+  const hsNumber = '67890'; // Replace with actual HS Number
+  const productNumber = '101112'; //Replace with actual Product Number
+  const initialFacilityOwnership = 'Facility A';
+  const updatedFacilityOwnership = 'Facility B';
 
 
-  before(() => {
+  beforeEach(() => {
     cy.testCaseMapping([
       {
         testCaseId: "ADO:937167",
@@ -71,25 +21,29 @@ describe('Test Case ID: 937167 - Verify in edit function', () => {
         testCaseLink: "https://dev.azure.com/tr-corp-tax/onesource-global-trade/_workitems/edit/937167",
       },
     ]);
-    // Add any necessary before hooks here, e.g., setting up authentication
+    cy.visit(pageObject.baseUrl);
   });
 
-  it('should verify edit functionality', () => {
-    pageObject.login();
-    pageObject.navigateToFacilityOwnership();
-    pageObject.scrollToFacilityOwnership();
 
-    // Add a facility if none exists
-    cy.get(pageObject.addFacilityButton).then(($el) => {
-      if ($el.length > 0) {
-        pageObject.addFacilityOwnership('Some Value');
+  it('should successfully edit facility ownership', () => {
+    const productRecordUrl = `${pageObject.baseUrl}gtm/product-classification/product-record?productId=${productId}&hsNumber=${hsNumber}&productNumber=${productNumber}&countryCode=US`;
+
+    pageObject.login(username, password);
+    pageObject.navigateToProductRecordPage(productRecordUrl);
+    pageObject.clickFacilityOwnership();
+
+    // Check if records exist, if not add one
+    pageObject.addButton.should('be.visible').then(($addButton) => {
+      if ($addButton.length > 0) {
+          pageObject.addRecord(initialFacilityOwnership);
       }
     });
 
-    pageObject.editFacilityOwnership('New Value');
+    pageObject.editRecord(updatedFacilityOwnership);
+    //Add assertions to verify successful message and updated facility ownership
+    cy.contains('Facility ownership updated successfully').should('be.visible'); //Example assertion, adjust as needed based on your actual success message.
+    cy.get('#facilityOwnershipField').should('have.value', updatedFacilityOwnership); //Example assertion, adjust as needed based on your UI selectors.
   });
-
-  // Add more tests as needed
 });
 
 ```
